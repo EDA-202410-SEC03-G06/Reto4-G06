@@ -59,6 +59,7 @@ def print_menu():
     print("7- Ejecutar Requerimiento 6")
     print("8- Ejecutar Requerimiento 7")
     print("9- Ejecutar Requerimiento 8")
+    print("10- Cambiar tamaño de archivos")
     print("0- Salir")
 
 
@@ -81,40 +82,49 @@ def print_req_1(control):
     """
         Función que imprime la solución del Requerimiento 1 en consola
     """
+    origen = input('Ingrese el punto de origen con latitud y longitud: ')
+    destino = input('Ingrese el destino con latitud y longitud: ')
     # TODO: Imprimir el resultado del requerimiento 1
-    pass
+    ans = controller.req_1(control,origen,destino)
+    return ans
 
 
 def print_req_2(control):
     """
         Función que imprime la solución del Requerimiento 2 en consola
     """
+    origen = input('Ingrese el punto de origen con latitud y longitud: ')
+    destino = input('Ingrese el destino con latitud y longitud: ')
     # TODO: Imprimir el resultado del requerimiento 2
-    pass
-
+    ans = controller.req_2(control,origen,destino)
+    return ans
 
 def print_req_3(control):
     """
         Función que imprime la solución del Requerimiento 3 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 3
-    pass
-
+    print('Buscando la mayor red de trayectos con menor distancia desde el de mas concurrencia...')
+    ans = controller.req_3(control)
+    return ans
 
 def print_req_4(control):
     """
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
-    pass
-
+    print('Buscando la mayor red de rutas de transporte con menor distancia (partiendo con el aereopuerto de mayor carga)...')
+    ans = controller.req_4(control)
+    return ans
 
 def print_req_5(control):
     """
         Función que imprime la solución del Requerimiento 5 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 5
-    pass
+    print('Buscando la mayor red de trayectos en Colombia (desee el de mayor importancia militar)...')
+    ans = controller.req_5(control)
+    return ans
 
 
 def print_req_6(control):
@@ -122,7 +132,9 @@ def print_req_6(control):
         Función que imprime la solución del Requerimiento 6 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 6
-    pass
+    M = int(input('Cantidad de aereopuertos con mayor prioridad (M)'))
+    ans = controller.req_6(control,M)
+    return ans
 
 
 def print_req_7(control):
@@ -130,7 +142,11 @@ def print_req_7(control):
         Función que imprime la solución del Requerimiento 7 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 7
-    pass
+    origen = input('Ingrese el punto de origen con latitud y longitud: ')
+    destino = input('Ingrese el destino con latitud y longitud: ')
+    # TODO: Imprimir el resultado del requerimiento 1
+    ans = controller.req_1(control,origen,destino)
+    return ans
 
 
 def print_req_8(control):
@@ -180,6 +196,9 @@ if __name__ == "__main__":
 
         elif int(inputs) == 9:
             print_req_8(control)
+            
+        elif int(inputs) == 10:
+            size_archivo = int(input('Escoga el Tamaño:\n1.10%\n2.20%\n3.small%\n4.50%\n5.80%\n6.100%\nOpcion: '))
 
         elif int(inputs) == 0:
             working = False
