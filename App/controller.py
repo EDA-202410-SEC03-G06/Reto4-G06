@@ -36,17 +36,40 @@ def new_controller():
     Crea una instancia del modelo
     """
     #TODO: Llamar la función del modelo que crea las estructuras de datos
-    pass
+    control = {
+        'model': None
+    }
+    control['model'] = model.new_data_structs(tipo)
+    return control
 
 
 # Funciones para la carga de datos
 
-def load_data(control, filename):
-    """
-    Carga los datos del reto
-    """
-    # TODO: Realizar la carga de datos
-    pass
+def load_data(control, size_archivo):
+ 
+    if size_archivo == 1:
+        arc = "10-por"
+    elif size_archivo ==2:
+        arc = "20-por"
+    elif size_archivo ==3:
+        arc = "small"
+    elif size_archivo == 4: 
+        arc= "50-por"
+    elif size_archivo == 5: 
+        arc= "80-por"
+    else: 
+        arc = "large"
+        
+    start_time = get_time()
+    
+
+    
+    end_time = get_time()   
+    deltaTime = delta_time(start_time, end_time)
+    print(deltaTime,"[ms]")
+
+    return 
+
 
 
 # Funciones de ordenamiento

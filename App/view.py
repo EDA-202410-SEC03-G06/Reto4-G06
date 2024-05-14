@@ -67,7 +67,7 @@ def load_data(control):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    pass
+    return controller.load_data(control, size_archivo)
 
 
 def print_data(control, id):
@@ -143,7 +143,7 @@ def print_req_8(control):
 
 # Se crea el controlador asociado a la vista
 control = new_controller()
-
+size_archivo = 1
 # main del reto
 if __name__ == "__main__":
     """
