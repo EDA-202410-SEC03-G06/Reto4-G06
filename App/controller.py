@@ -39,7 +39,7 @@ def new_controller():
     control = {
         'model': None
     }
-    control['model'] = model.new_data_structs(tipo)
+    control['model'] = model.new_data_structs()
     return control
 
 
@@ -74,6 +74,25 @@ def load_data(control, size_archivo):
 
 # Funciones de ordenamiento
 
+def load_comercial(data_structs):
+    booksfile_1 = cf.data_dir + str("airports-2022.csv")
+    booksfile_2 = cf.data_dir + str("flights-2022.csv")
+    airportfile = csv.DictReader(open(booksfile_1, encoding="utf-8"), delimiter=";")
+    fligthfile = csv.DictReader(open(booksfile_2, encoding="utf-8"), delimiter=";")
+
+def load_carga(data_structs):
+    booksfile_1 = cf.data_dir + str("airports-2022.csv")
+    booksfile_2 = cf.data_dir + str("flights-2022.csv")
+    airportfile = csv.DictReader(open(booksfile_1, encoding="utf-8"), delimiter=";")
+    flightfile = csv.DictReader(open(booksfile_2, encoding="utf-8"), delimiter=";")
+
+def load_militar(data_structs):
+    booksfile_1 = cf.data_dir + str("airports-2022.csv")
+    booksfile_2 = cf.data_dir + str("flights-2022.csv")
+    airportfile = csv.DictReader(open(booksfile_1, encoding="utf-8"), delimiter=";")
+    flightfile = csv.DictReader(open(booksfile_2, encoding="utf-8"), delimiter=";")
+    
+    
 def sort(control):
     """
     Ordena los datos del modelo

@@ -26,6 +26,7 @@
 
 
 import config as cf
+import csv
 from DISClib.ADT import list as lt
 from DISClib.ADT import stack as st
 from DISClib.ADT import queue as qu
@@ -63,8 +64,45 @@ def new_data_structs():
     """
     #TODO: Inicializar las estructuras de datos
     catalog = {
-        
+            'disComercial': None,
+            'timeComercial': None,
+            'disCarga': None,
+            'timeCarga': None,
+            'disMilitar':None,
+            'timeMilitar': None
     }
+    
+    catalog['disComercial'] = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=True,
+                                              size=14000,
+                                              cmpfunction=)
+    
+    catalog['timeComercial'] = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=True,
+                                              size=14000,
+                                              cmpfunction=)
+    
+    catalog['disCarga'] = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=True,
+                                              size=14000,
+                                              cmpfunction=)
+ 
+    catalog['timeCarga'] = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=True,
+                                              size=14000,
+                                              cmpfunction=)
+    
+    catalog['disMilitar'] = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=True,
+                                              size=14000,
+                                              cmpfunction=)
+
+    catalog['timeMilitar'] = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=True,
+                                              size=14000,
+                                              cmpfunction=)
+ 
+ 
     return catalog
 
 
@@ -76,6 +114,8 @@ def add_data(data_structs, data):
     """
     #TODO: Crear la función para agregar elementos a una lista
     pass
+def addDisComercial(data_structs,airport,flight):
+    
 
 
 # Funciones para creacion de datos
