@@ -126,6 +126,17 @@ def new_data(id, info):
     #TODO: Crear la función para estructurar los datos
     pass
 
+def add_vertex(catalog, airport):
+    #Agregar vertices a vuelos comerciales
+    gr.insertVertex(catalog['disComercial'], airport['ICAO'])
+    gr.insertVertex(catalog['timeComercial'], airport['ICAO'])
+    #Agregar vertices a vuelos Militares
+    gr.insertVertex(catalog['disMilitar'], airport['ICAO'])
+    gr.insertVertex(catalog['timeMilitar'], airport['ICAO'])
+    #Agregar vertices a vuelos de Carga
+    gr.insertVertex(catalog['disCarga'], airport['ICAO'])
+    gr.insertVertex(catalog['timeCarga'], airport['ICAO'])
+    
 def add_arcoComercial(catalog,flight):
     gr.addEdge(catalog['disComercial'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
     gr.addEdge(catalog['timeComercial'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
