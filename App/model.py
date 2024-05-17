@@ -114,7 +114,6 @@ def add_data(data_structs, data):
     """
     #TODO: Crear la función para agregar elementos a una lista
     pass
-def addDisComercial(data_structs,airport,flight):
     
 
 
@@ -127,8 +126,18 @@ def new_data(id, info):
     #TODO: Crear la función para estructurar los datos
     pass
 
-
+def add_arcoComercial(catalog,flight):
+    gr.addEdge(catalog['disComercial'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
+    gr.addEdge(catalog['timeComercial'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
+    
+def add_arcoCarga(catalog,flight):
+    gr.addEdge(catalog['disCarga'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
+    gr.addEdge(catalog['timeCarga'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])    
+    
 # Funciones de consulta
+def add_arcoMilitar(catalog,flight):
+    gr.addEdge(catalog['disMilitar'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
+    gr.addEdge(catalog['timeMilitar'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
 
 def get_data(data_structs, id):
     """

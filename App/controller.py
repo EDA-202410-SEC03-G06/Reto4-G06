@@ -79,18 +79,29 @@ def load_comercial(data_structs):
     booksfile_2 = cf.data_dir + str("flights-2022.csv")
     airportfile = csv.DictReader(open(booksfile_1, encoding="utf-8"), delimiter=";")
     fligthfile = csv.DictReader(open(booksfile_2, encoding="utf-8"), delimiter=";")
-
+    
+    for flight in fligthfile:
+        if flight['TIPO_VUELO']=='AVIACION_COMERCIAL':
+            model.add_arcoComercial(data_structs,flight)
+    
 def load_carga(data_structs):
     booksfile_1 = cf.data_dir + str("airports-2022.csv")
     booksfile_2 = cf.data_dir + str("flights-2022.csv")
     airportfile = csv.DictReader(open(booksfile_1, encoding="utf-8"), delimiter=";")
     flightfile = csv.DictReader(open(booksfile_2, encoding="utf-8"), delimiter=";")
+    
+    for flight in flightfile:
+        if flight['TIPO_VUELO']=='AVIACION_CARGA':
+            model.add_arcoCarga(data_structs,flight)
 
 def load_militar(data_structs):
     booksfile_1 = cf.data_dir + str("airports-2022.csv")
     booksfile_2 = cf.data_dir + str("flights-2022.csv")
     airportfile = csv.DictReader(open(booksfile_1, encoding="utf-8"), delimiter=";")
     flightfile = csv.DictReader(open(booksfile_2, encoding="utf-8"), delimiter=";")
+    for flight in flightfile:
+        if flight['TIPO_VUELO']=='MILITAR':
+            model.add_arcoMilitar(data_structs,flight)
     
     
 def sort(control):
