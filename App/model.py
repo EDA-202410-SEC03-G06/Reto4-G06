@@ -251,3 +251,7 @@ def sort(data_structs):
     """
     #TODO: Crear función de ordenamiento
     pass
+
+def data_size(grafo):
+    lista = gr.vertices(grafo)
+    return lt.size(lista)

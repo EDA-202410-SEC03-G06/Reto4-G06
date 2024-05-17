@@ -46,29 +46,18 @@ def new_controller():
 # Funciones para la carga de datos
 
 def load_data(control, size_archivo):
- 
-    if size_archivo == 1:
-        arc = "10-por"
-    elif size_archivo ==2:
-        arc = "20-por"
-    elif size_archivo ==3:
-        arc = "small"
-    elif size_archivo == 4: 
-        arc= "50-por"
-    elif size_archivo == 5: 
-        arc= "80-por"
-    else: 
-        arc = "large"
-        
+
     start_time = get_time()
     
-
+    comercial = load_comercial(control['model'])
+    carga = load_carga(control['model'])
+    militar = load_militar(control['model'])
     
     end_time = get_time()   
     deltaTime = delta_time(start_time, end_time)
     print(deltaTime,"[ms]")
 
-    return 
+    return (comercial,carga,militar)
 
 
 
@@ -83,6 +72,10 @@ def load_comercial(data_structs):
     for flight in fligthfile:
         if flight['TIPO_VUELO']=='AVIACION_COMERCIAL':
             model.add_arcoComercial(data_structs,flight)
+            
+    return model.data_size(data_structs['timeComercial'])
+    
+    
     
 def load_carga(data_structs):
     booksfile_1 = cf.data_dir + str("airports-2022.csv")
@@ -93,6 +86,8 @@ def load_carga(data_structs):
     for flight in flightfile:
         if flight['TIPO_VUELO']=='AVIACION_CARGA':
             model.add_arcoCarga(data_structs,flight)
+    return model.data_size(data_structs['timeCarga'])
+
 
 def load_militar(data_structs):
     booksfile_1 = cf.data_dir + str("airports-2022.csv")
@@ -102,7 +97,7 @@ def load_militar(data_structs):
     for flight in flightfile:
         if flight['TIPO_VUELO']=='MILITAR':
             model.add_arcoMilitar(data_structs,flight)
-    
+    return model.data_size(data_structs['timeMilitar'])
     
 def sort(control):
     """
