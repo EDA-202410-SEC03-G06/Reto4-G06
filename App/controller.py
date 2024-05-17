@@ -45,60 +45,46 @@ def new_controller():
 
 # Funciones para la carga de datos
 
-def load_data(control, size_archivo):
+def load_data(control):
 
     start_time = get_time()
     
-    comercial = load_comercial(control['model'])
-    carga = load_carga(control['model'])
-    militar = load_militar(control['model'])
+    loadAirports(control['model'])
+    carga, comercial, militar, aeropuertos = loadVuelos(control['model'])
     
     end_time = get_time()   
     deltaTime = delta_time(start_time, end_time)
     print(deltaTime,"[ms]")
 
-    return (comercial,carga,militar)
+    return (comercial, carga, militar, aeropuertos)
 
 
 
 # Funciones de ordenamiento
-
-def load_comercial(data_structs):
+def loadAirports(data_structs):
     booksfile_1 = cf.data_dir + str("airports-2022.csv")
-    booksfile_2 = cf.data_dir + str("flights-2022.csv")
     airportfile = csv.DictReader(open(booksfile_1, encoding="utf-8"), delimiter=";")
-    fligthfile = csv.DictReader(open(booksfile_2, encoding="utf-8"), delimiter=";")
     
-    for flight in fligthfile:
-        if flight['TIPO_VUELO']=='AVIACION_COMERCIAL':
-            model.add_arcoComercial(data_structs,flight)
-            
-    return model.data_size(data_structs['timeComercial'])
-    
-    
-    
-def load_carga(data_structs):
-    booksfile_1 = cf.data_dir + str("airports-2022.csv")
-    booksfile_2 = cf.data_dir + str("flights-2022.csv")
-    airportfile = csv.DictReader(open(booksfile_1, encoding="utf-8"), delimiter=";")
-    flightfile = csv.DictReader(open(booksfile_2, encoding="utf-8"), delimiter=";")
-    
-    for flight in flightfile:
-        if flight['TIPO_VUELO']=='AVIACION_CARGA':
-            model.add_arcoCarga(data_structs,flight)
-    return model.data_size(data_structs['timeCarga'])
+    for airport in airportfile:
+        model.add_vertex(data_structs, airport)
 
-
-def load_militar(data_structs):
-    booksfile_1 = cf.data_dir + str("airports-2022.csv")
+        
+def loadVuelos(data_structs):
     booksfile_2 = cf.data_dir + str("flights-2022.csv")
-    airportfile = csv.DictReader(open(booksfile_1, encoding="utf-8"), delimiter=";")
     flightfile = csv.DictReader(open(booksfile_2, encoding="utf-8"), delimiter=";")
     for flight in flightfile:
         if flight['TIPO_VUELO']=='MILITAR':
             model.add_arcoMilitar(data_structs,flight)
-    return model.data_size(data_structs['timeMilitar'])
-    
+        elif flight['TIPO_VUELO']=='AVIACION_CARGA':
+            model.add_arcoCarga(data_structs,flight)
+        elif flight['TIPO_VUELO']=='AVIACION_COMERCIAL':
+            model.add_arcoComercial(data_structs,flight)
+    sizeCarga = model.data_size(data_structs['timeCarga'])
+    sizeMilitar = model.data_size(data_structs['timeMilitar'])
+    sizeComercial = model.data_size(data_structs['timeComercial'])
+    aeropuertos = model.totalVertex(data_structs['disCarga'])
+    return sizeCarga, sizeComercial, sizeMilitar, aeropuertos
+
 def sort(control):
     """
     Ordena los datos del modelo

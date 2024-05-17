@@ -48,6 +48,7 @@ from DISClib.Algorithms.Sorting import selectionsort as se
 from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
 assert cf
+from haversine import haversine
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá
@@ -69,40 +70,38 @@ def new_data_structs():
             'disCarga': None,
             'timeCarga': None,
             'disMilitar':None,
-            'timeMilitar': None
+            'timeMilitar': None,
+            'coordenadas': None
     }
     
     catalog['disComercial'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
-                                              size=14000,
-                                              cmpfunction=)
+                                              size=14000
+                                              )
     
     catalog['timeComercial'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
-                                              size=14000,
-                                              cmpfunction=)
+                                              size=14000)
     
     catalog['disCarga'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
-                                              size=14000,
-                                              cmpfunction=)
+                                              size=14000)
  
     catalog['timeCarga'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
-                                              size=14000,
-                                              cmpfunction=)
+                                              size=14000)
     
     catalog['disMilitar'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
-                                              size=14000,
-                                              cmpfunction=)
+                                              size=14000)
 
     catalog['timeMilitar'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
-                                              size=14000,
-                                              cmpfunction=)
- 
- 
+                                              size=14000
+                                              )
+    catalog['coordenadas'] = mp.newMap()
+    
+    catalog['coordenadas-inverso'] = mp.newMap()
     return catalog
 
 
@@ -136,18 +135,35 @@ def add_vertex(catalog, airport):
     #Agregar vertices a vuelos de Carga
     gr.insertVertex(catalog['disCarga'], airport['ICAO'])
     gr.insertVertex(catalog['timeCarga'], airport['ICAO'])
+    #Agregar un mapa con las coordenadas de cada aeropuerto
+    latitud = float(airport['LATITUD'].replace(',','.'))
+    longitud = float(airport['LONGITUD'].replace(',','.'))
+    aero = (latitud, longitud)
     
+    mp.put(catalog['coordenadas'], airport['ICAO'], aero)
+    
+    mp.put(catalog['coordenadas-inverso'], aero, airport['ICAO'])
+        
 def add_arcoComercial(catalog,flight):
-    gr.addEdge(catalog['disComercial'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
+    origen = me.getValue(mp.get(catalog['coordenadas'], flight['ORIGEN']))
+    destino = me.getValue(mp.get(catalog['coordenadas'], flight['DESTINO']))
+    distancia = haversine(origen, destino)
+    gr.addEdge(catalog['disComercial'],flight['ORIGEN'],flight['DESTINO'], distancia)
     gr.addEdge(catalog['timeComercial'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
     
 def add_arcoCarga(catalog,flight):
-    gr.addEdge(catalog['disCarga'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
+    origen = me.getValue(mp.get(catalog['coordenadas'], flight['ORIGEN']))
+    destino = me.getValue(mp.get(catalog['coordenadas'], flight['DESTINO']))
+    distancia = haversine(origen, destino)
+    gr.addEdge(catalog['disCarga'],flight['ORIGEN'],flight['DESTINO'],distancia)
     gr.addEdge(catalog['timeCarga'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])    
     
 # Funciones de consulta
 def add_arcoMilitar(catalog,flight):
-    gr.addEdge(catalog['disMilitar'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
+    origen = me.getValue(mp.get(catalog['coordenadas'], flight['ORIGEN']))
+    destino = me.getValue(mp.get(catalog['coordenadas'], flight['DESTINO']))
+    distancia = haversine(origen, destino)
+    gr.addEdge(catalog['disMilitar'],flight['ORIGEN'],flight['DESTINO'],distancia)
     gr.addEdge(catalog['timeMilitar'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
 
 def get_data(data_structs, id):
@@ -157,13 +173,15 @@ def get_data(data_structs, id):
     #TODO: Crear la función para obtener un dato de una lista
     pass
 
+def totalVertex(data_structs):
+    return gr.numVertices(data_structs)
 
 def data_size(data_structs):
     """
     Retorna el tamaño de la lista de datos
     """
     #TODO: Crear la función para obtener el tamaño de una lista
-    pass
+    return gr.numEdges(data_structs)
 
 
 def req_1(data_structs):

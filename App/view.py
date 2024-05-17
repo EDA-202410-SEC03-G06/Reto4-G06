@@ -45,7 +45,8 @@ def new_controller():
         Se crea una instancia del controlador
     """
     #TODO: Llamar la función del controlador donde se crean las estructuras de datos
-    pass
+    control = controller.new_controller()
+    return control
 
 
 def print_menu():
@@ -59,7 +60,6 @@ def print_menu():
     print("7- Ejecutar Requerimiento 6")
     print("8- Ejecutar Requerimiento 7")
     print("9- Ejecutar Requerimiento 8")
-    print("10- Cambiar tamaño de archivos")
     print("0- Salir")
 
 
@@ -68,7 +68,7 @@ def load_data(control):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    return controller.load_data(control, size_archivo)
+    return controller.load_data(control)
 
 
 def print_data(control, id):
@@ -159,7 +159,7 @@ def print_req_8(control):
 
 # Se crea el controlador asociado a la vista
 control = new_controller()
-size_archivo = 1
+
 # main del reto
 if __name__ == "__main__":
     """
@@ -173,6 +173,11 @@ if __name__ == "__main__":
         if int(inputs) == 1:
             print("Cargando información de los archivos ....\n")
             data = load_data(control)
+            print('\nLa cantidad total de aeropuertos es:', data[3])
+            print('La cantidad de vuelos comerciales es:', data[0])
+            print('La cantidad de vuelos de carga es:', data[1])
+            print('La cantidad total de vuelos militares es de:', data[2])
+            print('Por lo que la cantidad total de vuelos es de:', (data[0]+data[1]+data[2]))
         elif int(inputs) == 2:
             print_req_1(control)
 
@@ -197,9 +202,6 @@ if __name__ == "__main__":
         elif int(inputs) == 9:
             print_req_8(control)
             
-        elif int(inputs) == 10:
-            size_archivo = int(input('Escoga el Tamaño:\n1.10%\n2.20%\n3.small%\n4.50%\n5.80%\n6.100%\nOpcion: '))
-
         elif int(inputs) == 0:
             working = False
             print("\nGracias por utilizar el programa")
