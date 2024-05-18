@@ -82,8 +82,13 @@ def print_req_1(control):
     """
         Función que imprime la solución del Requerimiento 1 en consola
     """
-    origen = input('Ingrese el punto de origen con latitud y longitud: ')
-    destino = input('Ingrese el destino con latitud y longitud: ')
+    origen_lat = float(input('Ingrese la latitud del origen: '))
+    origen_lon = float(input('Ingrese la longitud del origen: '))
+    destino_lat = float(input('Ingrese la latitud del destino: '))
+    destino_lon = float(input('Ingrese la longitud del destino: '))
+    
+    origen = (origen_lat,origen_lon)
+    destino = (destino_lat, destino_lon)
     # TODO: Imprimir el resultado del requerimiento 1
     ans = controller.req_1(control,origen,destino)
     return ans

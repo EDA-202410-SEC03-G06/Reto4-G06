@@ -184,12 +184,12 @@ def data_size(data_structs):
     return gr.numEdges(data_structs)
 
 
-def req_1(data_structs):
+def req_1(catalog, origen, destino):
     """
     Función que soluciona el requerimiento 1
     """
     # TODO: Realizar el requerimiento 1
-    pass
+    print(mp.contains(catalog['coordenadas_inverso'], origen))
 
 
 def req_2(data_structs):
