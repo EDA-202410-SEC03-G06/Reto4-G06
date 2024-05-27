@@ -261,7 +261,11 @@ def req_1(catalog, origen, destino):
     vertOrigen = me.getValue(mp.get(catalog['coordenadas_inverso'], origen))
     vertDestino = me.getValue(mp.get(catalog['coordenadas_inverso'], destino))
     
+    caminos = djk.Dijkstra(catalog['disComercial'], vertOrigen)
     
+    distancia = djk.distTo(caminos, vertDestino)
+    camino = djk.pathTo(caminos, vertDestino)
+    print(camino)
     
 
 
