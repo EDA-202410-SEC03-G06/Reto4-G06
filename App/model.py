@@ -373,15 +373,13 @@ def sort_criteria_tabla_comercial(data_1, data_2):
         _type_: _description_
     """
     #TODO: Crear función comparadora para ordenar
-    data1 = data_1['cantidad_Comercial']
-    data2 = data_2['cantidad_Comercial']
+  
     
-    if data1 == data2:
-        return 0
-    elif data1 > data2:
-        return 1
+    if data_1['cantidad_Comercial']==data_2['cantidad_Comercial']:
+        return data_1['ICAO'] < data_2['ICAO']
     else:
-        return -1
+        return data_1['cantidad_Comercial']> data_2['cantidad_Comercial']
+
 
 def sort_criteria_tabla_carga(data_1, data_2):
     """sortCriteria criterio de ordenamiento para las funciones de ordenamiento
