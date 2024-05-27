@@ -71,7 +71,9 @@ def new_data_structs():
             'timeCarga': None,
             'disMilitar':None,
             'timeMilitar': None,
-            'coordenadas': None
+            'coordenadas': None,
+            'coordenadas_inverso': None,
+            'aeropuertosData': None
     }
     
     catalog['disComercial'] = gr.newGraph(datastructure='ADJ_LIST',
@@ -101,7 +103,9 @@ def new_data_structs():
                                               )
     catalog['coordenadas'] = mp.newMap()
     
-    catalog['coordenadas-inverso'] = mp.newMap()
+    catalog['coordenadas_inverso'] = mp.newMap()
+    
+    catalog['aeropuertosData'] = mp.newMap()
     return catalog
 
 
@@ -142,9 +146,28 @@ def add_vertex(catalog, airport):
     
     mp.put(catalog['coordenadas'], airport['ICAO'], aero)
     
-    mp.put(catalog['coordenadas-inverso'], aero, airport['ICAO'])
+    mp.put(catalog['coordenadas_inverso'], aero, airport['ICAO'])
+    
+    airport['cantidad_Comercial']= 0
+    airport['cantidad_Militar'] = 0
+    airport['cantidad_Carga']= 0
+    mp.put(catalog['aeropuertosData'],airport['ICAO'], airport)
+    
         
 def add_arcoComercial(catalog,flight):
+    origen = flight['ORIGEN']
+    destino = flight['DESTINO']
+    
+    parejaOrigen = mp.get(catalog['aeropuertosData'],origen)
+    infoOrigen = me.getValue(parejaOrigen)
+    infoOrigen['cantidad_Comercial'] +=1
+    
+    parejaDestino = mp.get(catalog['aeropuertosData'],destino)
+    valor_destino = me.getValue(parejaDestino)
+    valor_destino['cantidad_Comercial'] +=1
+    
+    
+    
     origen = me.getValue(mp.get(catalog['coordenadas'], flight['ORIGEN']))
     destino = me.getValue(mp.get(catalog['coordenadas'], flight['DESTINO']))
     distancia = haversine(origen, destino)
@@ -152,6 +175,17 @@ def add_arcoComercial(catalog,flight):
     gr.addEdge(catalog['timeComercial'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
     
 def add_arcoCarga(catalog,flight):
+    origen = flight['ORIGEN']
+    destino = flight['DESTINO']
+    
+    parejaOrigen = mp.get(catalog['aeropuertosData'],origen)
+    infoOrigen = me.getValue(parejaOrigen)
+    infoOrigen['cantidad_Carga'] +=1
+    
+    parejaDestino = mp.get(catalog['aeropuertosData'],destino)
+    valor_destino = me.getValue(parejaDestino)
+    valor_destino['cantidad_Carga'] +=1
+    
     origen = me.getValue(mp.get(catalog['coordenadas'], flight['ORIGEN']))
     destino = me.getValue(mp.get(catalog['coordenadas'], flight['DESTINO']))
     distancia = haversine(origen, destino)
@@ -160,6 +194,17 @@ def add_arcoCarga(catalog,flight):
     
 # Funciones de consulta
 def add_arcoMilitar(catalog,flight):
+    origen = flight['ORIGEN']
+    destino = flight['DESTINO']
+    
+    parejaOrigen = mp.get(catalog['aeropuertosData'],origen)
+    infoOrigen = me.getValue(parejaOrigen)
+    infoOrigen['cantidad_Militar'] +=1
+    
+    parejaDestino = mp.get(catalog['aeropuertosData'],destino)
+    valor_destino = me.getValue(parejaDestino)
+    valor_destino['cantidad_Militar'] +=1
+    
     origen = me.getValue(mp.get(catalog['coordenadas'], flight['ORIGEN']))
     destino = me.getValue(mp.get(catalog['coordenadas'], flight['DESTINO']))
     distancia = haversine(origen, destino)
@@ -183,13 +228,41 @@ def data_size(data_structs):
     #TODO: Crear la función para obtener el tamaño de una lista
     return gr.numEdges(data_structs)
 
+def datosTablas(data_structs, tipo_Avion):
+    if tipo_Avion =='militar':
+        merg.sort(data_structs, sort_criteria_tabla_militar)
+    elif tipo_Avion =='comercial':
+        merg.sort(data_structs, sort_criteria_tabla_comercial)
+    else:
+        merg.sort(data_structs, sort_criteria_tabla_carga)
+    
+    primeros = lt.subList(data_structs,1,5)
+    ultimos = lt.subList(data_structs,-4,5)
+    prim_ult = []
+    for valor in lt.iterator(primeros):
+        prim_ult.append(valor)
+    for valor in lt.iterator(ultimos):
+        prim_ult.append(valor)
+    return prim_ult
 
+def crear_tablas(catalog):
+    militar = datosTablas(mp.valueSet(catalog['aeropuertosData']), 'militar')
+    comercial = datosTablas(mp.valueSet(catalog['aeropuertosData']), 'comercial')
+    carga = datosTablas(mp.valueSet(catalog['aeropuertosData']), 'carga')
+    
+    return militar, comercial, carga
+    
 def req_1(catalog, origen, destino):
     """
     Función que soluciona el requerimiento 1
     """
     # TODO: Realizar el requerimiento 1
-    print(mp.contains(catalog['coordenadas_inverso'], origen))
+    
+    vertOrigen = me.getValue(mp.get(catalog['coordenadas_inverso'], origen))
+    vertDestino = me.getValue(mp.get(catalog['coordenadas_inverso'], destino))
+    
+    
+    
 
 
 def req_2(data_structs):
@@ -207,14 +280,18 @@ def req_3(data_structs):
     # TODO: Realizar el requerimiento 3
     pass
 
-
-def req_4(data_structs):
+'''
+def req_4(catalog):
     """
     Función que soluciona el requerimiento 4
     """
     # TODO: Realizar el requerimiento 4
-    pass
-
+    carga = catalog['disCarga']
+    listaVertices = gr.vertices(carga)
+    maxVert = 0
+    maxDeg = 0
+    for ver in lt.iterator(listaVertices):
+ '''       
 
 def req_5(data_structs):
     """
@@ -260,7 +337,7 @@ def compare(data_1, data_2):
 # Funciones de ordenamiento
 
 
-def sort_criteria(data_1, data_2):
+def sort_criteria_tabla_militar(data_1, data_2):
     """sortCriteria criterio de ordenamiento para las funciones de ordenamiento
 
     Args:
@@ -271,9 +348,58 @@ def sort_criteria(data_1, data_2):
         _type_: _description_
     """
     #TODO: Crear función comparadora para ordenar
-    pass
+    data1 = data_1['cantidad_Militar']
+    data2 = data_2['cantidad_Militar']
+    
+    if data1 == data2:
+        return 0
+    elif data1 < data2:
+        return 1
+    else:
+        return -1
+    
+def sort_criteria_tabla_comercial(data_1, data_2):
+    """sortCriteria criterio de ordenamiento para las funciones de ordenamiento
 
+    Args:
+        data1 (_type_): _description_
+        data2 (_type_): _description_
 
+    Returns:
+        _type_: _description_
+    """
+    #TODO: Crear función comparadora para ordenar
+    data1 = data_1['cantidad_Comercial']
+    data2 = data_2['cantidad_Comercial']
+    
+    if data1 == data2:
+        return 0
+    elif data1 > data2:
+        return 1
+    else:
+        return -1
+
+def sort_criteria_tabla_carga(data_1, data_2):
+    """sortCriteria criterio de ordenamiento para las funciones de ordenamiento
+
+    Args:
+        data1 (_type_): _description_
+        data2 (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    #TODO: Crear función comparadora para ordenar
+    data1 = data_1['cantidad_Carga']
+    data2 = data_2['cantidad_Carga']
+    
+    if data1 == data2:
+        return 0
+    elif data1 > data2:
+        return 1
+    else:
+        return -1
+    
 def sort(data_structs):
     """
     Función encargada de ordenar la lista con los datos

@@ -50,13 +50,13 @@ def load_data(control):
     start_time = get_time()
     
     loadAirports(control['model'])
-    carga, comercial, militar, aeropuertos = loadVuelos(control['model'])
+    total_vuelos, aeropuertos, militar, comercial, carga = loadVuelos(control['model'])
     
     end_time = get_time()   
     deltaTime = delta_time(start_time, end_time)
     print(deltaTime,"[ms]")
 
-    return (comercial, carga, militar, aeropuertos)
+    return total_vuelos, aeropuertos, militar, comercial, carga
 
 
 
@@ -69,21 +69,52 @@ def loadAirports(data_structs):
         model.add_vertex(data_structs, airport)
 
         
-def loadVuelos(data_structs):
+def loadVuelos(catalog):
     booksfile_2 = cf.data_dir + str("flights-2022.csv")
     flightfile = csv.DictReader(open(booksfile_2, encoding="utf-8"), delimiter=";")
+    total_vuelos = 0
     for flight in flightfile:
+        total_vuelos +=1
         if flight['TIPO_VUELO']=='MILITAR':
-            model.add_arcoMilitar(data_structs,flight)
+            model.add_arcoMilitar(catalog,flight)
+            origen = flight['ORIGEN']
+            destino = flight['DESTINO']
+    
+            parejaOrigen = model.mp.get(catalog['aeropuertosData'],origen)
+            infoOrigen = model.me.getValue(parejaOrigen)
+            infoOrigen['cantidad_Militar'] +=1
+    
+            parejaDestino = model.mp.get(catalog['aeropuertosData'],destino)
+            valor_destino = model.me.getValue(parejaDestino)
+            valor_destino['cantidad_Militar'] +=1
         elif flight['TIPO_VUELO']=='AVIACION_CARGA':
-            model.add_arcoCarga(data_structs,flight)
+            model.add_arcoCarga(catalog,flight)
+            origen = flight['ORIGEN']
+            destino = flight['DESTINO']
+    
+            parejaOrigen = model.mp.get(catalog['aeropuertosData'],origen)
+            infoOrigen = model.me.getValue(parejaOrigen)
+            infoOrigen['cantidad_Carga'] +=1
+    
+            parejaDestino = model.mp.get(catalog['aeropuertosData'],destino)
+            valor_destino = model.me.getValue(parejaDestino)
+            valor_destino['cantidad_Carga'] +=1
         elif flight['TIPO_VUELO']=='AVIACION_COMERCIAL':
-            model.add_arcoComercial(data_structs,flight)
-    sizeCarga = model.data_size(data_structs['timeCarga'])
-    sizeMilitar = model.data_size(data_structs['timeMilitar'])
-    sizeComercial = model.data_size(data_structs['timeComercial'])
-    aeropuertos = model.totalVertex(data_structs['disCarga'])
-    return sizeCarga, sizeComercial, sizeMilitar, aeropuertos
+            model.add_arcoComercial(catalog,flight)
+            origen = flight['ORIGEN']
+            destino = flight['DESTINO']
+    
+            parejaOrigen = model.mp.get(catalog['aeropuertosData'],origen)
+            infoOrigen = model.me.getValue(parejaOrigen)
+            infoOrigen['cantidad_Comercial'] +=1
+    
+            parejaDestino = model.mp.get(catalog['aeropuertosData'],destino)
+            valor_destino = model.me.getValue(parejaDestino)
+            valor_destino['cantidad_Comercial'] +=1
+        
+    aeropuertos = model.totalVertex(catalog['disCarga'])
+    militar, comercial, carga = model.crear_tablas(catalog)
+    return total_vuelos, aeropuertos, militar, comercial, carga
 
 def sort(control):
     """
@@ -108,7 +139,7 @@ def req_1(control, origen, destino):
     Retorna el resultado del requerimiento 1
     """
     # TODO: Modificar el requerimiento 1
-    return model.req_1(control['model'], origen, destino)
+    return model.req_1(control['model'], (4.70159,-74.1469), (5.0296, -75.4647))
 
 
 def req_2(control):

@@ -177,12 +177,17 @@ if __name__ == "__main__":
         inputs = input('Seleccione una opción para continuar\n')
         if int(inputs) == 1:
             print("Cargando información de los archivos ....\n")
-            data = load_data(control)
-            print('\nLa cantidad total de aeropuertos es:', data[3])
-            print('La cantidad de vuelos comerciales es:', data[0])
-            print('La cantidad de vuelos de carga es:', data[1])
-            print('La cantidad total de vuelos militares es de:', data[2])
-            print('Por lo que la cantidad total de vuelos es de:', (data[0]+data[1]+data[2]))
+            total_vuelos, aeropuertos, militar, comercial, carga= load_data(control)
+            print('\nLa cantidad total de aeropuertos es:', aeropuertos)
+            print('La cantidad total de vuelos es de:', total_vuelos)
+            
+            print('\nAeropuertos con mayor concurrencia comercial:')
+            #print(tabulate(comercial, headers='keys', tablefmt="simple_grid"))
+            print('\nAeropuertos con mayor concurrencia militar:')
+            #print(tabulate(militar, headers='keys', tablefmt="simple_grid"))
+            print('\nAeropuertos con mayor concurrencia carga:')
+            #print(tabulate(carga, headers='keys', tablefmt="simple_grid"))
+            
         elif int(inputs) == 2:
             print_req_1(control)
 
