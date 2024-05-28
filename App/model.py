@@ -401,15 +401,10 @@ def sort_criteria_tabla_militar(data_1, data_2):
         _type_: _description_
     """
     #TODO: Crear función comparadora para ordenar
-    data1 = data_1['cantidad_Militar']
-    data2 = data_2['cantidad_Militar']
-    
-    if data1 == data2:
-        return 0
-    elif data1 < data2:
-        return 1
+    if data_1['cantidad_Militar']==data_2['cantidad_Militar']:
+        return data_1['ICAO'] < data_2['ICAO']
     else:
-        return -1
+        return data_1['cantidad_Militar']> data_2['cantidad_Militar']
     
 def sort_criteria_tabla_comercial(data_1, data_2):
     """sortCriteria criterio de ordenamiento para las funciones de ordenamiento
@@ -428,6 +423,23 @@ def sort_criteria_tabla_comercial(data_1, data_2):
         return data_1['ICAO'] < data_2['ICAO']
     else:
         return data_1['cantidad_Comercial']> data_2['cantidad_Comercial']
+
+
+def sort_criteria_tabla_carga(data_1, data_2):
+    """sortCriteria criterio de ordenamiento para las funciones de ordenamiento
+
+    Args:
+        data1 (_type_): _description_
+        data2 (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    #TODO: Crear función comparadora para ordenar
+    if data_1['cantidad_Carga']==data_2['cantidad_Carga']:
+        return data_1['ICAO'] < data_2['ICAO']
+    else:
+        return data_1['cantidad_Carga']> data_2['cantidad_Carga']
     
 def sort_criteria_tabla_Colombia(data_1, data_2):
     """sortCriteria criterio de ordenamiento para las funciones de ordenamiento
@@ -448,27 +460,6 @@ def sort_criteria_tabla_Colombia(data_1, data_2):
         return data_1['cantidad_Colombia']> data_2['cantidad_Colombia']
 
 
-def sort_criteria_tabla_carga(data_1, data_2):
-    """sortCriteria criterio de ordenamiento para las funciones de ordenamiento
-
-    Args:
-        data1 (_type_): _description_
-        data2 (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    #TODO: Crear función comparadora para ordenar
-    data1 = data_1['cantidad_Carga']
-    data2 = data_2['cantidad_Carga']
-    
-    if data1 == data2:
-        return 0
-    elif data1 > data2:
-        return 1
-    else:
-        return -1
-    
 def sort(data_structs):
     """
     Función encargada de ordenar la lista con los datos
