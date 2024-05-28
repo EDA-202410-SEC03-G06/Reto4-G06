@@ -150,9 +150,9 @@ def add_vertex(catalog, airport):
     #Agregar a disColombia
     if airport['PAIS']=='Colombia':
         gr.insertVertex(catalog['disColombia'], airport['ICAO'])
-        ispresent = lt.isPresent(catalog['ciudadesCol'],airport['CIUDAD'])
+        ispresent = lt.isPresent(catalog['ciudadesCol'],airport['ICAO'])
         if not ispresent:
-            lt.addLast(catalog['ciudadesCol'],airport['CIUDAD'])
+            lt.addLast(catalog['ciudadesCol'],airport['ICAO'])
         
     #Agregar un mapa con las coordenadas de cada aeropuerto
     latitud = float(airport['LATITUD'].replace(',','.'))
@@ -188,9 +188,10 @@ def add_arcoComercial(catalog,flight):
     destino = me.getValue(mp.get(catalog['coordenadas'], flight['DESTINO']))
     distancia = haversine(origen, destino)
     
-    origenISpresent = lt.isPresent(catalog['ciudadesCol'],flight['CIUDAD_ORIGEN'])
-    destinoISpresent = lt.isPresent(catalog['ciudadesCol'],flight['CIUDAD_DESTINO']) 
-    if origenISpresent==True and destinoISpresent==True:
+    origenISpresent = lt.isPresent(catalog['ciudadesCol'],flight['ORIGEN'])
+    destinoISpresent = lt.isPresent(catalog['ciudadesCol'],flight['DESTINO']) 
+    if origenISpresent!=0 and destinoISpresent!=0:
+        infoOrigen['cantidad_Colombia'] +=1
         valor_destino['cantidad_Colombia'] +=1
         gr.addEdge(catalog['disComercial'],flight['ORIGEN'],flight['DESTINO'], distancia)
     
@@ -306,6 +307,9 @@ def req_3(data_structs):
     """
     # TODO: Realizar el requerimiento 3
     disComercial = data_structs['disComercial']
+    listaConcurrencia = mp.valueSet(data_structs['aeropuertosData'])
+    merg.sort(listaConcurrencia,sort_criteria_tabla_comercial)
+    mayorConcurrencia = lt.firstElement(listaConcurrencia)
     
     pass
 
@@ -337,6 +341,7 @@ def req_6(data_structs, n):
     """
     # TODO: Realizar el requerimiento 6
     disComercial = data_structs['disColombia']
+    print(disComercial)
     listaConcurrencia = mp.valueSet(data_structs['aeropuertosData'])
     merg.sort(listaConcurrencia,sort_criteria_tabla_Colombia)
     mayorConcurrencia = lt.firstElement(listaConcurrencia)
