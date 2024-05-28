@@ -193,7 +193,7 @@ def add_arcoComercial(catalog,flight):
     if origenISpresent!=0 and destinoISpresent!=0:
         infoOrigen['cantidad_Colombia'] +=1
         valor_destino['cantidad_Colombia'] +=1
-        gr.addEdge(catalog['disComercial'],flight['ORIGEN'],flight['DESTINO'], distancia)
+        gr.addEdge(catalog['disColombia'],flight['ORIGEN'],flight['DESTINO'], distancia)
     
     gr.addEdge(catalog['disComercial'],flight['ORIGEN'],flight['DESTINO'], distancia)
     gr.addEdge(catalog['timeComercial'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
@@ -310,7 +310,7 @@ def req_3(data_structs):
     listaConcurrencia = mp.valueSet(data_structs['aeropuertosData'])
     merg.sort(listaConcurrencia,sort_criteria_tabla_comercial)
     mayorConcurrencia = lt.firstElement(listaConcurrencia)
-    
+    trayecto = dfs.DepthFirstSearch(disComercial)
     pass
 
 '''
@@ -341,7 +341,6 @@ def req_6(data_structs, n):
     """
     # TODO: Realizar el requerimiento 6
     disComercial = data_structs['disColombia']
-    print(disComercial)
     listaConcurrencia = mp.valueSet(data_structs['aeropuertosData'])
     merg.sort(listaConcurrencia,sort_criteria_tabla_Colombia)
     mayorConcurrencia = lt.firstElement(listaConcurrencia)
@@ -354,6 +353,11 @@ def req_6(data_structs, n):
         Dijktra = djk.Dijkstra(disComercial,mayorConcurrencia['ICAO'])
         distancia = djk.distTo(Dijktra,destino['ICAO'])
         ruta = djk.pathTo(Dijktra,destino['ICAO'])
+        for camino in lt.iterator(ruta):
+            verticeA = camino['vertexA']
+            verticeB = camino['vertexB']
+            viaje = verticeA+'-'+verticeB
+            print(viaje)
         print(distancia)
         print(ruta)
         #mp.put(rutas,destino,ruta)
