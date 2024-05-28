@@ -264,7 +264,8 @@ def datosTablas(data_structs, tipo_Avion):
     prim_ult = []
     for valor in lt.iterator(primeros):
         prim_ult.append(valor)
-    
+    for valor in lt.iterator(ultimos):
+        prim_ult.append(valor)
     return prim_ult
 
 def crear_tablas(catalog):
@@ -435,6 +436,25 @@ def sort_criteria_tabla_carga(data_1, data_2):
     else:
         return data_1['cantidad_Carga']> data_2['cantidad_Carga']
     
+def sort_criteria_tabla_Colombia(data_1, data_2):
+    """sortCriteria criterio de ordenamiento para las funciones de ordenamiento
+
+    Args:
+        data1 (_type_): _description_
+        data2 (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    #TODO: Crear función comparadora para ordenar
+  
+    
+    if data_1['cantidad_Colombia']==data_2['cantidad_Colombia']:
+        return data_1['ICAO'] < data_2['ICAO']
+    else:
+        return data_1['cantidad_Colombia']> data_2['cantidad_Colombia']
+
+
 def sort(data_structs):
     """
     Función encargada de ordenar la lista con los datos
