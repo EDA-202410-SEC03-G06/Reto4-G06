@@ -70,6 +70,8 @@ def new_data_structs():
             'disCarga': None,
             'timeCarga': None,
             'disMilitar':None,
+            'disColombia': None,
+            'ciudadesCol': None,
             'timeMilitar': None,
             'coordenadas': None,
             'coordenadas_inverso': None,
@@ -101,6 +103,12 @@ def new_data_structs():
                                               directed=True,
                                               size=14000
                                               )
+    
+    catalog['disColombia'] = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=True,
+                                              size=14000
+                                              )
+    catalog['ciudadesCol'] = lt.newList('ARRAY_LIST')
     catalog['coordenadas'] = mp.newMap()
     
     catalog['coordenadas_inverso'] = mp.newMap()
@@ -139,6 +147,13 @@ def add_vertex(catalog, airport):
     #Agregar vertices a vuelos de Carga
     gr.insertVertex(catalog['disCarga'], airport['ICAO'])
     gr.insertVertex(catalog['timeCarga'], airport['ICAO'])
+    #Agregar a disColombia
+    if airport['PAIS']=='Colombia':
+        gr.insertVertex(catalog['disColombia'], airport['ICAO'])
+        ispresent = lt.isPresent(catalog['ciudadesCol'],airport['CIUDAD'])
+        if not ispresent:
+            lt.addLast(catalog['ciudadesCol'],airport['CIUDAD'])
+        
     #Agregar un mapa con las coordenadas de cada aeropuerto
     latitud = float(airport['LATITUD'].replace(',','.'))
     longitud = float(airport['LONGITUD'].replace(',','.'))
@@ -151,6 +166,8 @@ def add_vertex(catalog, airport):
     airport['cantidad_Comercial']= 0
     airport['cantidad_Militar'] = 0
     airport['cantidad_Carga']= 0
+    airport['cantidad_Colombia']= 0
+
     mp.put(catalog['aeropuertosData'],airport['ICAO'], airport)
     
         
@@ -162,15 +179,21 @@ def add_arcoComercial(catalog,flight):
     infoOrigen = me.getValue(parejaOrigen)
     infoOrigen['cantidad_Comercial'] +=1
     
+    
     parejaDestino = mp.get(catalog['aeropuertosData'],destino)
     valor_destino = me.getValue(parejaDestino)
     valor_destino['cantidad_Comercial'] +=1
     
-    
-    
     origen = me.getValue(mp.get(catalog['coordenadas'], flight['ORIGEN']))
     destino = me.getValue(mp.get(catalog['coordenadas'], flight['DESTINO']))
     distancia = haversine(origen, destino)
+    
+    origenISpresent = lt.isPresent(catalog['ciudadesCol'],flight['CIUDAD_ORIGEN'])
+    destinoISpresent = lt.isPresent(catalog['ciudadesCol'],flight['CIUDAD_DESTINO']) 
+    if origenISpresent==True and destinoISpresent==True:
+        valor_destino['cantidad_Colombia'] +=1
+        gr.addEdge(catalog['disComercial'],flight['ORIGEN'],flight['DESTINO'], distancia)
+    
     gr.addEdge(catalog['disComercial'],flight['ORIGEN'],flight['DESTINO'], distancia)
     gr.addEdge(catalog['timeComercial'],flight['ORIGEN'],flight['DESTINO'],flight['TIEMPO_VUELO'])
     
@@ -305,12 +328,30 @@ def req_5(data_structs):
     pass
 
 
-def req_6(data_structs):
+def req_6(data_structs, n):
+    
     """
     Función que soluciona el requerimiento 6
     """
     # TODO: Realizar el requerimiento 6
-    pass
+    disComercial = data_structs['disColombia']
+    listaConcurrencia = mp.valueSet(data_structs['aeropuertosData'])
+    merg.sort(listaConcurrencia,sort_criteria_tabla_Colombia)
+    mayorConcurrencia = lt.firstElement(listaConcurrencia)
+    count = 1
+    rutas = mp.newMap()
+
+    while count<n:
+        count+=1
+        destino = lt.getElement(listaConcurrencia,count)
+        Dijktra = djk.Dijkstra(disComercial,mayorConcurrencia)
+        distancia = djk.distTo(Dijktra,destino)
+        ruta = djk.pathTo(Dijktra,destino)
+        print(ruta)
+        mp.put(rutas,destino,ruta)
+        
+        
+    return mayorConcurrencia, rutas
 
 
 def req_7(data_structs):
@@ -379,6 +420,24 @@ def sort_criteria_tabla_comercial(data_1, data_2):
         return data_1['ICAO'] < data_2['ICAO']
     else:
         return data_1['cantidad_Comercial']> data_2['cantidad_Comercial']
+    
+def sort_criteria_tabla_Colombia(data_1, data_2):
+    """sortCriteria criterio de ordenamiento para las funciones de ordenamiento
+
+    Args:
+        data1 (_type_): _description_
+        data2 (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    #TODO: Crear función comparadora para ordenar
+  
+    
+    if data_1['cantidad_Colombia']==data_2['cantidad_Colombia']:
+        return data_1['ICAO'] < data_2['ICAO']
+    else:
+        return data_1['cantidad_Colombia']> data_2['cantidad_Colombia']
 
 
 def sort_criteria_tabla_carga(data_1, data_2):
