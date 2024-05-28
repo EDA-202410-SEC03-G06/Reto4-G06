@@ -305,6 +305,8 @@ def req_3(data_structs):
     Función que soluciona el requerimiento 3
     """
     # TODO: Realizar el requerimiento 3
+    disComercial = data_structs['disComercial']
+    
     pass
 
 '''
@@ -344,11 +346,12 @@ def req_6(data_structs, n):
     while count<n:
         count+=1
         destino = lt.getElement(listaConcurrencia,count)
-        Dijktra = djk.Dijkstra(disComercial,mayorConcurrencia)
-        distancia = djk.distTo(Dijktra,destino)
-        ruta = djk.pathTo(Dijktra,destino)
+        Dijktra = djk.Dijkstra(disComercial,mayorConcurrencia['ICAO'])
+        distancia = djk.distTo(Dijktra,destino['ICAO'])
+        ruta = djk.pathTo(Dijktra,destino['ICAO'])
+        print(distancia)
         print(ruta)
-        mp.put(rutas,destino,ruta)
+        #mp.put(rutas,destino,ruta)
         
         
     return mayorConcurrencia, rutas
