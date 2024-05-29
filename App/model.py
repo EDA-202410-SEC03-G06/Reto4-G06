@@ -372,7 +372,6 @@ def req_6(data_structs, n):
         if cuenta>0:
             break
         else:
-            print(ele)
             cuenta+=1
                 
     while count<(n+1):
@@ -383,7 +382,7 @@ def req_6(data_structs, n):
         ruta = djk.pathTo(Dijktra,destino['ICAO'])
         aeropuertos =[]
         vuelos = []
-        print(ruta)
+        
         for camino in lt.iterator(ruta):
             verticeA = camino['vertexA']
             verticeB = camino['vertexB']
@@ -395,9 +394,9 @@ def req_6(data_structs, n):
 
         lt.addLast(rutas,{'Total Aeropuertos:':len(aeropuertos),'Aeropuertos:':aeropuertos,'Vuelos':vuelos,'Distancia':round(distancia,5)})
         
-    mayorConcurrencia = {'ICAO':mayorConcurrencia['ICAO'],'NOMBRE':mayorConcurrencia['NOMBRE'],'CIUDAD':mayorConcurrencia['CIUDAD'],
+    mayorConcurrencia = [{'ICAO':mayorConcurrencia['ICAO'],'NOMBRE':mayorConcurrencia['NOMBRE'],'CIUDAD':mayorConcurrencia['CIUDAD'],
                              'PAIS':mayorConcurrencia['PAIS'],'CONCURRENCIA_NACIONAL':mayorConcurrencia['cantidad_Colombia'],
-                             'CONCURRENCIA_TOTAL':mayorConcurrencia['cantidad_Comercial']}
+                             'CONCURRENCIA_TOTAL':mayorConcurrencia['cantidad_Comercial']}]
 
     return mayorConcurrencia, rutas
 

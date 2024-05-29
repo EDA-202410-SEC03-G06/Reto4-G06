@@ -146,9 +146,8 @@ def print_req_6(control):
     # TODO: Imprimir el resultado del requerimiento 6
     M = int(input('Cantidad de aereopuertos con mayor prioridad (M)'))
     mayorC, rutas = controller.req_6(control,M)
-    print(mayorC)
-    for ele in rutas['elements']:
-        print(ele)
+    print(tabulate(mayorC, headers='keys', tablefmt="simple_grid"))
+    print(tabulate(rutas['elements'], headers='keys', tablefmt="simple_grid"))
     pass
 
 
