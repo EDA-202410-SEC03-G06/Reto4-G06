@@ -75,7 +75,10 @@ def new_data_structs():
             'timeMilitar': None,
             'coordenadas': None,
             'coordenadas_inverso': None,
-            'aeropuertosData': None
+            'aeropuertosData': None,
+            'vuelosComercial': None,
+            'vuelosCarga': None,
+            'vuelosMilitar':None
     }
     
     catalog['disComercial'] = gr.newGraph(datastructure='ADJ_LIST',
@@ -114,6 +117,10 @@ def new_data_structs():
     catalog['coordenadas_inverso'] = mp.newMap()
     
     catalog['aeropuertosData'] = mp.newMap()
+    
+    catalog['vuelosComercial'] = mp.newMap()
+    catalog['vuelosCarga'] = mp.newMap()
+    catalog['vuelosMilitar'] = mp.newMap()
     return catalog
 
 
@@ -195,6 +202,9 @@ def add_arcoComercial(catalog,flight):
         valor_destino['cantidad_Colombia'] +=1
         gr.addEdge(catalog['disColombia'],flight['ORIGEN'],flight['DESTINO'], distancia)
     
+    llave= (flight['ORIGEN'],flight['DESTINO'])
+    mp.put(catalog['vuelosComercial'], llave, flight)
+    
     gr.addEdge(catalog['disComercial'],flight['ORIGEN'],flight['DESTINO'], distancia)
     gr.addEdge(catalog['timeComercial'],flight['ORIGEN'],flight['DESTINO'],int(flight['TIEMPO_VUELO']))
     
@@ -209,6 +219,9 @@ def add_arcoCarga(catalog,flight):
     parejaDestino = mp.get(catalog['aeropuertosData'],destino)
     valor_destino = me.getValue(parejaDestino)
     valor_destino['cantidad_Carga'] +=1
+    
+    llave= (flight['ORIGEN'],flight['DESTINO'])
+    mp.put(catalog['vuelosCarga'], llave, flight)
     
     origen = me.getValue(mp.get(catalog['coordenadas'], flight['ORIGEN']))
     destino = me.getValue(mp.get(catalog['coordenadas'], flight['DESTINO']))
@@ -228,6 +241,9 @@ def add_arcoMilitar(catalog,flight):
     parejaDestino = mp.get(catalog['aeropuertosData'],destino)
     valor_destino = me.getValue(parejaDestino)
     valor_destino['cantidad_Militar'] +=1
+    
+    llave= (flight['ORIGEN'],flight['DESTINO'])
+    mp.put(catalog['vuelosMilitar'], llave, flight)
     
     origen = me.getValue(mp.get(catalog['coordenadas'], flight['ORIGEN']))
     destino = me.getValue(mp.get(catalog['coordenadas'], flight['DESTINO']))
