@@ -373,8 +373,6 @@ def req_3(data_structs):
     """
     # TODO: Realizar el requerimiento 3
     disComercial = data_structs['disComercial']
-    timeComercial = data_structs['timeComercial']
-    aeropuertos = mp.keySet(data_structs['coordenadas'])
     listaConcurrencia = mp.valueSet(data_structs['aeropuertosData'])
     merg.sort(listaConcurrencia,sort_criteria_tabla_comercial)
     mayorConcurrencia = lt.firstElement(listaConcurrencia)
@@ -413,11 +411,11 @@ def req_3(data_structs):
             if verticeB not in aeropRuta:
                 aeropRuta.insert(0,verticeB)
             vuelosRuta.insert(0,viaje)
-            
     trayecto = ordenar_vuelos(data_structs,vuelosRuta,'Comercial')
-    print(vuelosRuta)
-    print(trayecto)
-    return mayorConcurrencia, disTotal, (data_size(grafo)-1), trayecto
+    mayorConcurrencia = [{'ICAO':mayorConcurrencia['ICAO'],'NOMBRE':mayorConcurrencia['NOMBRE'],'CIUDAD':mayorConcurrencia['CIUDAD'],
+                             'PAIS':mayorConcurrencia['PAIS'],'CONCURRENCIA_NACIONAL':mayorConcurrencia['cantidad_Colombia'],
+                             'CONCURRENCIA_TOTAL':mayorConcurrencia['cantidad_Comercial']}]
+    return mayorConcurrencia, disTotal, data_size(grafo)-1, trayecto
 
 
 def req_4(catalog):
@@ -462,10 +460,10 @@ def req_6(data_structs, n):
             verticeA = camino['vertexA']
             verticeB = camino['vertexB']
             viaje = verticeA+'-'+verticeB
-            aeropuertos.append(verticeA)
+            aeropuertos.insert(0,verticeA)
             if verticeB not in aeropuertos:
-                aeropuertos.append(verticeB)
-            vuelos.append(viaje)
+                aeropuertos.insert(0,verticeB)
+            vuelos.insert(0,viaje)
 
         lt.addLast(rutas,{'Total Aeropuertos:':len(aeropuertos),'Aeropuertos:':aeropuertos,'Vuelos':vuelos,'Distancia':round(distancia,5)})
         
@@ -644,9 +642,9 @@ def ordenar_vuelos(catalog,flights,tipo):
     distancia = str('dis'+tipo)
     vuelos = str('vuelos'+tipo)
     vuelos_index = catalog[vuelos]
-    info = {}
+    info = []
     for vuelo in flights:
         datos = me.getValue(mp.get(vuelos_index,vuelo))
-        info[vuelo] = {'ORGIEN_CIUDAD':datos['CIUDAD_ORIGEN'],'DESTINO_CIUDAD':datos['CIUDAD_DESTINO'],
-                       'TIEMPO':datos['TIEMPO_VUELO'],'DISTANCIA':gr.getEdge(catalog[distancia],vuelo[0],vuelo[1])}
+        info.append({'ICAO':vuelo,'ORIGEN_CIUDAD':datos['CIUDAD_ORIGEN'],'DESTINO_CIUDAD':datos['CIUDAD_DESTINO'],
+                       'TIEMPO':datos['TIEMPO_VUELO'],'DISTANCIA':round(gr.getEdge(catalog[distancia],vuelo[0],vuelo[1])['weight'],5)})
     return info

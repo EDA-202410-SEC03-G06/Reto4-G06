@@ -115,8 +115,13 @@ def print_req_3(control):
     """
     # TODO: Imprimir el resultado del requerimiento 3
     print('Buscando la mayor red de trayectos con menor distancia desde el de mas concurrencia...')
-    ans = controller.req_3(control)
-    return ans
+    mayorC,distancia,trayectos,secuencia = controller.req_3(control)
+    print(tabulate(secuencia,headers='keys',tablefmt='simple_grid'))
+    print(tabulate(mayorC,headers='keys',tablefmt='simple_grid'))
+    print('La distacia total de todos los trayectos es: ',distancia)
+    print('La cantidad total de trayectos es: ',trayectos)
+
+    return mayorC
 
 def print_req_4(control):
     """
