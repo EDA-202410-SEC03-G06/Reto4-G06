@@ -342,27 +342,42 @@ def req_6(data_structs, n):
     # TODO: Realizar el requerimiento 6
     disComercial = data_structs['disColombia']
     listaConcurrencia = mp.valueSet(data_structs['aeropuertosData'])
-    merg.sort(listaConcurrencia,sort_criteria_tabla_Colombia)
+    merg.sort(listaConcurrencia,sort_criteria_tabla_comercial)
     mayorConcurrencia = lt.firstElement(listaConcurrencia)
     count = 1
-    rutas = mp.newMap()
-
-    while count<n:
+    rutas = lt.newList('ARRAY_LIST')
+    cuenta =0
+    for ele in lt.iterator(listaConcurrencia):
+        if cuenta>0:
+            break
+        else:
+            print(ele)
+            cuenta+=1
+                
+    while count<(n+1):
         count+=1
         destino = lt.getElement(listaConcurrencia,count)
         Dijktra = djk.Dijkstra(disComercial,mayorConcurrencia['ICAO'])
         distancia = djk.distTo(Dijktra,destino['ICAO'])
         ruta = djk.pathTo(Dijktra,destino['ICAO'])
+        aeropuertos =[]
+        vuelos = []
+        print(ruta)
         for camino in lt.iterator(ruta):
             verticeA = camino['vertexA']
             verticeB = camino['vertexB']
             viaje = verticeA+'-'+verticeB
-            print(viaje)
-        print(distancia)
-        print(ruta)
-        #mp.put(rutas,destino,ruta)
+            aeropuertos.append(verticeA)
+            if verticeB not in aeropuertos:
+                aeropuertos.append(verticeB)
+            vuelos.append(viaje)
+
+        lt.addLast(rutas,{'Total Aeropuertos:':len(aeropuertos),'Aeropuertos:':aeropuertos,'Vuelos':vuelos,'Distancia':round(distancia,5)})
         
-        
+    mayorConcurrencia = {'ICAO':mayorConcurrencia['ICAO'],'NOMBRE':mayorConcurrencia['NOMBRE'],'CIUDAD':mayorConcurrencia['CIUDAD'],
+                             'PAIS':mayorConcurrencia['PAIS'],'CONCURRENCIA_NACIONAL':mayorConcurrencia['cantidad_Colombia'],
+                             'CONCURRENCIA_TOTAL':mayorConcurrencia['cantidad_Comercial']}
+
     return mayorConcurrencia, rutas
 
 

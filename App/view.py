@@ -128,8 +128,9 @@ def print_req_5(control):
     """
     # TODO: Imprimir el resultado del requerimiento 5
     print('Buscando la mayor red de trayectos en Colombia (desee el de mayor importancia militar)...')
-    ans = controller.req_5(control)
-    return ans
+    mayorC, rutas = controller.req_5(control)
+    #print(tabulate(mayorC,headers='keys',tablefmt="simple_grid"))
+    return mayorC
 
 
 def print_req_6(control):
@@ -138,8 +139,11 @@ def print_req_6(control):
     """
     # TODO: Imprimir el resultado del requerimiento 6
     M = int(input('Cantidad de aereopuertos con mayor prioridad (M)'))
-    ans = controller.req_6(control,M)
-    return ans
+    mayorC, rutas = controller.req_6(control,M)
+    print(mayorC)
+    for ele in rutas['elements']:
+        print(ele)
+    pass
 
 
 def print_req_7(control):
@@ -182,11 +186,11 @@ if __name__ == "__main__":
             print('La cantidad total de vuelos es de:', total_vuelos)
             
             print('\nAeropuertos con mayor concurrencia comercial:')
-            #print(tabulate(comercial, headers='keys', tablefmt="simple_grid"))
+            print(tabulate(comercial, headers='keys', tablefmt="simple_grid"))
             print('\nAeropuertos con mayor concurrencia militar:')
-            #print(tabulate(militar, headers='keys', tablefmt="simple_grid"))
+            print(tabulate(militar, headers='keys', tablefmt="simple_grid"))
             print('\nAeropuertos con mayor concurrencia carga:')
-            #print(tabulate(carga, headers='keys', tablefmt="simple_grid"))
+            print(tabulate(carga, headers='keys', tablefmt="simple_grid"))
             
         elif int(inputs) == 2:
             print_req_1(control)
