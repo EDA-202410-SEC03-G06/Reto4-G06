@@ -331,7 +331,8 @@ def req_3(data_structs):
     listaConcurrencia = mp.valueSet(data_structs['aeropuertosData'])
     merg.sort(listaConcurrencia,sort_criteria_tabla_comercial)
     mayorConcurrencia = lt.firstElement(listaConcurrencia)
-    trayecto = dfs.DepthFirstSearch(disComercial)
+    trayecto = prim.PrimMST(disComercial,mayorConcurrencia['ICAO'])
+    print(mayorConcurrencia)
     pass
 
 '''
@@ -510,3 +511,6 @@ def sort(data_structs):
 def data_size(grafo):
     lista = gr.vertices(grafo)
     return lt.size(lista)
+
+def cercania(aeropuertos,ubicacion):
+    pass

@@ -161,7 +161,7 @@ def req_3(control):
     Retorna el resultado del requerimiento 3
     """
     # TODO: Modificar el requerimiento 3
-    pass
+    return model.req_3(control['model'])
 
 
 def req_4(control):
