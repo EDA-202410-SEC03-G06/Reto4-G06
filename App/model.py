@@ -319,29 +319,28 @@ def req_1(catalog, origen, destino):
     vertDestino = me.getValue(mp.get(catalog['coordenadas_inverso'], aero_destino))
     
     if dist_origen <=30 and dist_destino <= 30:
-        caminos = djk.Dijkstra(catalog['disComercial'], vertOrigen)
+        caminos = bfs.BreathFirstSearch(catalog['disComercial'], vertOrigen)
   
-        camino = djk.pathTo(caminos, vertDestino)
-        distancia = djk.distTo(caminos, vertDestino)
+        camino = bfs.pathTo(caminos, vertDestino)
+        distancia = 0
         aeropuertos = lt.newList()
         
-  
-        totalAeropuertos = 1
+        totalAeropuertos = 0
   
     
         for vuelo in lt.iterator(camino):
-            verticeA = vuelo['vertexA']
-            verticeB = vuelo['vertexB']
-            arcoTiempo = gr.getEdge(catalog['timeComercial'],verticeA, verticeB)
+            if totalAeropuertos != 0:
+                arcoTiempo = gr.getEdge(catalog['timeComercial'],vuelo, verticeA)
+                arcoDistancia = gr.getEdge(catalog['disComercial'],vuelo, verticeA)
+                aeropuertoA['TIEMPO'] = arcoTiempo['weight']
+                distancia += arcoDistancia['weight']
+                
         
-            aeropuertoA = me.getValue(mp.get(catalog['aeropuertosData'],verticeA))
-            aeropuertoA['TIEMPO'] = 0
-            aeropuertoB = me.getValue(mp.get(catalog['aeropuertosData'],verticeB))
-            aeropuertoB['TIEMPO'] = arcoTiempo['weight']
-            if totalAeropuertos == 1:
-                lt.addLast(aeropuertos, aeropuertoB)
             totalAeropuertos+=1
+            aeropuertoA = me.getValue(mp.get(catalog['aeropuertosData'],vuelo))
+            aeropuertoA['TIEMPO'] = 0
             lt.addLast(aeropuertos, aeropuertoA)
+            verticeA = vuelo
         aeropuertosTabla = []
         for aeropuerto in lt.iterator(aeropuertos):
             info = {'ICAO': aeropuerto['ICAO'], 'NOMBRE': aeropuerto['NOMBRE'], 'CIUDAD': aeropuerto['CIUDAD'], 'PAIS': aeropuerto['PAIS'], 'TIEMPO': aeropuerto['TIEMPO']}
