@@ -308,10 +308,11 @@ def req_1(catalog, origen, destino):
            lt.addLast(aeropuertos, aeropuertoB)
         else:
             aeropuertoA['TIEMPO'] = 0
+        lt.addLast(aeropuertos, aeropuertoA)
     aeropuertosTabla = []
     for aeropuerto in lt.iterator(aeropuertos):
-       info = {'ICAO': aeropuerto['ICAO'], 'NOMBRE': aeropuerto['NOMBRE'], 'CIUDAD': aeropuerto['CIUDAD'], 'PAIS': aeropuerto['PAIS']}
-       aeropuertosTabla.append(info)
+       info = {'ICAO': aeropuerto['ICAO'], 'NOMBRE': aeropuerto['NOMBRE'], 'CIUDAD': aeropuerto['CIUDAD'], 'PAIS': aeropuerto['PAIS'], 'TIEMPO': aeropuerto['TIEMPO']}
+       aeropuertosTabla.insert(0, info)
     return distancia, totalAeropuertos, aeropuertosTabla, tiempo
 
 def req_2(data_structs):
@@ -401,12 +402,48 @@ def req_6(data_structs, n):
     return mayorConcurrencia, rutas
 
 
-def req_7(data_structs):
+def req_7(catalog, origen, destino):
     """
     Función que soluciona el requerimiento 7
     """
     # TODO: Realizar el requerimiento 7
-    pass
+    vertOrigen = me.getValue(mp.get(catalog['coordenadas_inverso'], origen))
+    vertDestino = me.getValue(mp.get(catalog['coordenadas_inverso'], destino))
+  
+    caminos = djk.Dijkstra(catalog['timeComercial'], vertOrigen)
+    
+    camino = djk.pathTo(caminos, vertDestino)
+    tiempo = djk.distTo(caminos, vertDestino)
+  
+    aeropuertos = lt.newList()
+  
+    totalAeropuertos = 1
+  
+    distancia = 0
+    for vuelo in lt.iterator(camino):
+        verticeA = vuelo['vertexA']
+        verticeB = vuelo['vertexB']
+        arcoDistancia = gr.getEdge(catalog['disComercial'],verticeA, verticeB)
+        distancia += arcoDistancia['weight']
+        aeropuertoA = me.getValue(mp.get(catalog['aeropuertosData'],verticeA))
+        aeropuertoA['DISTANCIA'] = 0
+        aeropuertoA['TIEMPO'] = 0
+        aeropuertoB = me.getValue(mp.get(catalog['aeropuertosData'],verticeB))
+        aeropuertoB['DISTANCIA'] = arcoDistancia['weight']
+        aeropuertoB['TIEMPO']= vuelo['weight']
+       
+        if totalAeropuertos == 1:
+            
+            lt.addLast(aeropuertos, aeropuertoB)
+            
+        lt.addLast(aeropuertos, aeropuertoA)
+        totalAeropuertos+=1
+        
+    aeropuertosTabla = []
+    for aeropuerto in lt.iterator(aeropuertos):
+       info = {'ICAO': aeropuerto['ICAO'], 'NOMBRE': aeropuerto['NOMBRE'], 'CIUDAD': aeropuerto['CIUDAD'], 'PAIS': aeropuerto['PAIS'], 'TIEMPO': aeropuerto['TIEMPO'], 'DISTANCIA': aeropuerto['DISTANCIA']}
+       aeropuertosTabla.insert(0,info)
+    return distancia, totalAeropuertos, aeropuertosTabla, tiempo
 
 
 def req_8(data_structs):

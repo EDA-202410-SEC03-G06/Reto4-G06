@@ -188,12 +188,19 @@ def req_6(control,n):
     return model.req_6(control['model'],n)
 
 
-def req_7(control):
+def req_7(control, origen, destino):
     """
     Retorna el resultado del requerimiento 7
     """
     # TODO: Modificar el requerimiento 7
-    pass
+    start_time = get_time()
+    datos = model.req_7(control['model'], model.me.getValue(model.mp.get(control['model']['coordenadas'],'KDAL')), (5.0296, -75.4647))
+    end_time = get_time()
+  
+    print(delta_time(start_time, end_time),'ms')
+  
+    return datos
+
 
 
 def req_8(control):
