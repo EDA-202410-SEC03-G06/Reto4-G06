@@ -113,7 +113,7 @@ def req_1(control, origen, destino):
     """
     # TODO: Modificar el requerimiento 1
     start_time = get_time()
-    datos = model.req_1(control['model'], model.me.getValue(model.mp.get(control['model']['coordenadas'],'KDAL')), (5.0296, -75.4647))
+    datos = model.req_1(control['model'], origen, destino )
     end_time = get_time()
   
     print(delta_time(start_time, end_time),'ms')
@@ -167,7 +167,7 @@ def req_7(control, origen, destino):
     """
     # TODO: Modificar el requerimiento 7
     start_time = get_time()
-    datos = model.req_7(control['model'], model.me.getValue(model.mp.get(control['model']['coordenadas'],'KDAL')), (5.0296, -75.4647))
+    datos = model.req_7(control['model'], origen, destino)
     end_time = get_time()
   
     print(delta_time(start_time, end_time),'ms')
