@@ -355,6 +355,7 @@ def req_3(data_structs):
     """
     # TODO: Realizar el requerimiento 3
     disComercial = data_structs['disComercial']
+    timeComercial = data_structs['timeComercial']
     aeropuertos = mp.keySet(data_structs['coordenadas'])
     listaConcurrencia = mp.valueSet(data_structs['aeropuertosData'])
     merg.sort(listaConcurrencia,sort_criteria_tabla_comercial)
@@ -363,6 +364,7 @@ def req_3(data_structs):
     prim.edgesMST(disComercial,arbol)
     arcos = arbol['mst']
     grafo = gr.newGraph()
+    
     
     for vuelo in lt.iterator(arcos):
         gr.insertVertex(grafo,vuelo['vertexA'])
@@ -383,18 +385,20 @@ def req_3(data_structs):
     ruta = djk.pathTo(Dijktra,aeroMayor)
 #usar prim.weight para suma de la distancia de los trayectos
     disTotal = prim.weightMST(grafo,arbol)
-
+    vuelosRuta =[]
+    aeropRuta = []
     for camino in lt.iterator(ruta):
             verticeA = camino['vertexA']
             verticeB = camino['vertexB']
-            viaje = verticeA+'-'+verticeB
-            aeropuertos.append(verticeA)
-            if verticeB not in aeropuertos:
-                aeropuertos.append(verticeB)
-            vuelos.append(viaje)
-
-    
-  
+            viaje = (verticeA,verticeB)
+            aeropRuta.insert(0,verticeA)
+            if verticeB not in aeropRuta:
+                aeropRuta.insert(0,verticeB)
+            vuelosRuta.insert(0,viaje)
+            
+    trayecto = ordenar_vuelos(data_structs,vuelosRuta,'Comercial')
+    print(vuelosRuta)
+    print(trayecto)
     return mayorConcurrencia, disTotal, (data_size(grafo)-1), trayecto
 
 
@@ -615,3 +619,14 @@ def data_size(grafo):
 
 def cercania(aeropuertos,ubicacion):
     pass
+
+def ordenar_vuelos(catalog,flights,tipo):
+    distancia = str('dis'+tipo)
+    vuelos = str('vuelos'+tipo)
+    vuelos_index = catalog[vuelos]
+    info = {}
+    for vuelo in flights:
+        datos = me.getValue(mp.get(vuelos_index,vuelo))
+        info[vuelo] = {'ORGIEN_CIUDAD':datos['CIUDAD_ORIGEN'],'DESTINO_CIUDAD':datos['CIUDAD_DESTINO'],
+                       'TIEMPO':datos['TIEMPO_VUELO'],'DISTANCIA':gr.getEdge(catalog[distancia],vuelo[0],vuelo[1])}
+    return info
