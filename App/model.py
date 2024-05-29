@@ -275,43 +275,71 @@ def crear_tablas(catalog):
     
     return militar, comercial, carga
     
+
+def encontrar_aeropuerto(catalog, origen):
+    aeropuertos = mp.keySet(catalog['coordenadas_inverso'])
+    cerca_origen = float('inf')
+    aero_cerca = None
+    for aeropuerto in lt.iterator(aeropuertos):
+        distancia_origen = haversine(origen, aeropuerto)
+        if distancia_origen < cerca_origen:
+            cerca_origen = distancia_origen
+            aero_cerca = aeropuerto
+    
+    return cerca_origen, aero_cerca
+    
+        
+    
+        
+    
 def req_1(catalog, origen, destino):
     """
     Función que soluciona el requerimiento 1
     """
     # TODO: Realizar el requerimiento 1
+    dist_origen, aero_origen = encontrar_aeropuerto(catalog, origen)
+    dist_destino, aero_destino = encontrar_aeropuerto(catalog, destino)
+    vertOrigen = me.getValue(mp.get(catalog['coordenadas_inverso'], aero_origen))
+    vertDestino = me.getValue(mp.get(catalog['coordenadas_inverso'], aero_destino))
     
-    vertOrigen = me.getValue(mp.get(catalog['coordenadas_inverso'], origen))
-    vertDestino = me.getValue(mp.get(catalog['coordenadas_inverso'], destino))
+    if dist_origen <=30 and dist_destino <= 30:
+        caminos = djk.Dijkstra(catalog['disComercial'], vertOrigen)
   
-    caminos = djk.Dijkstra(catalog['disComercial'], vertOrigen)
-  
-    camino = djk.pathTo(caminos, vertDestino)
-    distancia = djk.distTo(caminos, vertDestino)
-  
-    aeropuertos = lt.newList()
-  
-    totalAeropuertos = 1
-  
-    
-    for vuelo in lt.iterator(camino):
-        verticeA = vuelo['vertexA']
-        verticeB = vuelo['vertexB']
-        arcoTiempo = gr.getEdge(catalog['timeComercial'],verticeA, verticeB)
+        camino = djk.pathTo(caminos, vertDestino)
+        distancia = djk.distTo(caminos, vertDestino)
+        aeropuertos = lt.newList()
         
-        aeropuertoA = me.getValue(mp.get(catalog['aeropuertosData'],verticeA))
-        aeropuertoA['TIEMPO'] = 0
-        aeropuertoB = me.getValue(mp.get(catalog['aeropuertosData'],verticeB))
-        aeropuertoB['TIEMPO'] = arcoTiempo['weight']
-        if totalAeropuertos == 1:
-           lt.addLast(aeropuertos, aeropuertoB)
-        totalAeropuertos+=1
-        lt.addLast(aeropuertos, aeropuertoA)
-    aeropuertosTabla = []
-    for aeropuerto in lt.iterator(aeropuertos):
-       info = {'ICAO': aeropuerto['ICAO'], 'NOMBRE': aeropuerto['NOMBRE'], 'CIUDAD': aeropuerto['CIUDAD'], 'PAIS': aeropuerto['PAIS'], 'TIEMPO': aeropuerto['TIEMPO']}
-       aeropuertosTabla.insert(0, info)
-    return distancia, totalAeropuertos, aeropuertosTabla
+  
+        totalAeropuertos = 1
+  
+    
+        for vuelo in lt.iterator(camino):
+            verticeA = vuelo['vertexA']
+            verticeB = vuelo['vertexB']
+            arcoTiempo = gr.getEdge(catalog['timeComercial'],verticeA, verticeB)
+        
+            aeropuertoA = me.getValue(mp.get(catalog['aeropuertosData'],verticeA))
+            aeropuertoA['TIEMPO'] = 0
+            aeropuertoB = me.getValue(mp.get(catalog['aeropuertosData'],verticeB))
+            aeropuertoB['TIEMPO'] = arcoTiempo['weight']
+            if totalAeropuertos == 1:
+                lt.addLast(aeropuertos, aeropuertoB)
+            totalAeropuertos+=1
+            lt.addLast(aeropuertos, aeropuertoA)
+        aeropuertosTabla = []
+        for aeropuerto in lt.iterator(aeropuertos):
+            info = {'ICAO': aeropuerto['ICAO'], 'NOMBRE': aeropuerto['NOMBRE'], 'CIUDAD': aeropuerto['CIUDAD'], 'PAIS': aeropuerto['PAIS'], 'TIEMPO': aeropuerto['TIEMPO']}
+            aeropuertosTabla.insert(0, info)
+        return distancia, totalAeropuertos, aeropuertosTabla
+    else:
+        distancia = 0
+        totalAeropuertos = 0
+        aeropuertosTabla=[]
+        infoA={'AEROPUERTO': 'ORIGEN','ICAO': vertOrigen['ICAO'], 'NOMBRE': vertOrigen['NOMBRE'], 'CIUDAD': vertOrigen['CIUDAD'], 'PAIS': vertOrigen['PAIS'], 'DISTANCIA': dist_origen}
+        aeropuertosTabla.append(infoA)
+        infoB = {'AEROPUERTO':'DESTINO','ICAO': vertDestino['ICAO'], 'NOMBRE': vertDestino['NOMBRE'], 'CIUDAD': vertDestino['CIUDAD'], 'PAIS': vertDestino['PAIS'], 'DISTANCIA': dist_destino}
+        aeropuertosTabla.append(infoB)
+        return distancia, totalAeropuertos, aeropuertosTabla
 
 def req_2(data_structs):
     """
@@ -334,18 +362,13 @@ def req_3(data_structs):
     print(mayorConcurrencia)
     pass
 
-'''
+
 def req_4(catalog):
     """
     Función que soluciona el requerimiento 4
     """
     # TODO: Realizar el requerimiento 4
-    carga = catalog['disCarga']
-    listaVertices = gr.vertices(carga)
-    maxVert = 0
-    maxDeg = 0
-    for ver in lt.iterator(listaVertices):
- '''       
+    listaAeropuertos = mp.valueSet(catalog['aeropuertosData'])
 
 def req_5(data_structs):
     """
@@ -406,43 +429,57 @@ def req_7(catalog, origen, destino):
     Función que soluciona el requerimiento 7
     """
     # TODO: Realizar el requerimiento 7
-    vertOrigen = me.getValue(mp.get(catalog['coordenadas_inverso'], origen))
-    vertDestino = me.getValue(mp.get(catalog['coordenadas_inverso'], destino))
-  
-    caminos = djk.Dijkstra(catalog['timeComercial'], vertOrigen)
+    dist_origen, aero_origen = encontrar_aeropuerto(catalog, origen)
+    dist_destino, aero_destino = encontrar_aeropuerto(catalog, destino)
+    vertOrigen = me.getValue(mp.get(catalog['coordenadas_inverso'], aero_origen))
+    vertDestino = me.getValue(mp.get(catalog['coordenadas_inverso'], aero_destino))
     
-    camino = djk.pathTo(caminos, vertDestino)
-    tiempo = djk.distTo(caminos, vertDestino)
+    if dist_origen <=30 and dist_destino <= 30:
+        caminos = djk.Dijkstra(catalog['timeComercial'], vertOrigen)
+    
+        camino = djk.pathTo(caminos, vertDestino)
+        tiempo = djk.distTo(caminos, vertDestino)
   
-    aeropuertos = lt.newList()
+        aeropuertos = lt.newList()
   
-    totalAeropuertos = 1
+        totalAeropuertos = 1
   
-    distancia = 0
-    for vuelo in lt.iterator(camino):
-        verticeA = vuelo['vertexA']
-        verticeB = vuelo['vertexB']
-        arcoDistancia = gr.getEdge(catalog['disComercial'],verticeA, verticeB)
-        distancia += arcoDistancia['weight']
-        aeropuertoA = me.getValue(mp.get(catalog['aeropuertosData'],verticeA))
-        aeropuertoA['DISTANCIA'] = 0
-        aeropuertoA['TIEMPO'] = 0
-        aeropuertoB = me.getValue(mp.get(catalog['aeropuertosData'],verticeB))
-        aeropuertoB['DISTANCIA'] = arcoDistancia['weight']
-        aeropuertoB['TIEMPO']= vuelo['weight']
+        distancia = 0
+        for vuelo in lt.iterator(camino):
+            verticeA = vuelo['vertexA']
+            verticeB = vuelo['vertexB']
+            arcoDistancia = gr.getEdge(catalog['disComercial'],verticeA, verticeB)
+            distancia += arcoDistancia['weight']
+            aeropuertoA = me.getValue(mp.get(catalog['aeropuertosData'],verticeA))
+            aeropuertoA['DISTANCIA'] = 0
+            aeropuertoA['TIEMPO'] = 0
+            aeropuertoB = me.getValue(mp.get(catalog['aeropuertosData'],verticeB))
+            aeropuertoB['DISTANCIA'] = arcoDistancia['weight']
+            aeropuertoB['TIEMPO']= vuelo['weight']
        
-        if totalAeropuertos == 1:
+            if totalAeropuertos == 1:
             
-            lt.addLast(aeropuertos, aeropuertoB)
+                lt.addLast(aeropuertos, aeropuertoB)
             
-        lt.addLast(aeropuertos, aeropuertoA)
-        totalAeropuertos+=1
+            lt.addLast(aeropuertos, aeropuertoA)
+            totalAeropuertos+=1
         
-    aeropuertosTabla = []
-    for aeropuerto in lt.iterator(aeropuertos):
-       info = {'ICAO': aeropuerto['ICAO'], 'NOMBRE': aeropuerto['NOMBRE'], 'CIUDAD': aeropuerto['CIUDAD'], 'PAIS': aeropuerto['PAIS'], 'TIEMPO': aeropuerto['TIEMPO'], 'DISTANCIA': aeropuerto['DISTANCIA']}
-       aeropuertosTabla.insert(0,info)
-    return distancia, totalAeropuertos, aeropuertosTabla, tiempo
+        aeropuertosTabla = []
+        for aeropuerto in lt.iterator(aeropuertos):
+            info = {'ICAO': aeropuerto['ICAO'], 'NOMBRE': aeropuerto['NOMBRE'], 'CIUDAD': aeropuerto['CIUDAD'], 'PAIS': aeropuerto['PAIS'], 'TIEMPO': aeropuerto['TIEMPO'], 'DISTANCIA': aeropuerto['DISTANCIA']}
+            aeropuertosTabla.insert(0,info)
+        return distancia, totalAeropuertos, aeropuertosTabla, tiempo
+    else:
+        distancia = 0
+        totalAeropuertos = 0
+        aeropuertosTabla=[]
+        infoA={'AEROPUERTO': 'ORIGEN','ICAO': vertOrigen['ICAO'], 'NOMBRE': vertOrigen['NOMBRE'], 'CIUDAD': vertOrigen['CIUDAD'], 'PAIS': vertOrigen['PAIS'], 'DISTANCIA': dist_origen}
+        aeropuertosTabla.append(infoA)
+        infoB = {'AEROPUERTO':'DESTINO','ICAO': vertDestino['ICAO'], 'NOMBRE': vertDestino['NOMBRE'], 'CIUDAD': vertDestino['CIUDAD'], 'PAIS': vertDestino['PAIS'], 'DISTANCIA': dist_destino}
+        aeropuertosTabla.append(infoB)
+        return distancia, totalAeropuertos, aeropuertosTabla
+    
+    
 
 
 def req_8(data_structs):
