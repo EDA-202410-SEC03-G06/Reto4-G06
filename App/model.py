@@ -335,6 +335,8 @@ def req_1(catalog, origen, destino):
         distancia = 0
         totalAeropuertos = 0
         aeropuertosTabla=[]
+        vertOrigen = me.getValue(mp.get(catalog['aeropuertosData'], vertOrigen))
+        vertDestino = me.getValue(mp.get(catalog['aeropuertosData'], vertDestino))
         infoA={'AEROPUERTO': 'ORIGEN','ICAO': vertOrigen['ICAO'], 'NOMBRE': vertOrigen['NOMBRE'], 'CIUDAD': vertOrigen['CIUDAD'], 'PAIS': vertOrigen['PAIS'], 'DISTANCIA': dist_origen}
         aeropuertosTabla.append(infoA)
         infoB = {'AEROPUERTO':'DESTINO','ICAO': vertDestino['ICAO'], 'NOMBRE': vertDestino['NOMBRE'], 'CIUDAD': vertDestino['CIUDAD'], 'PAIS': vertDestino['PAIS'], 'DISTANCIA': dist_destino}
@@ -481,7 +483,7 @@ def req_7(catalog, origen, destino):
             arcoDistancia = gr.getEdge(catalog['disComercial'],verticeA, verticeB)
             distancia += arcoDistancia['weight']
             aeropuertoA = me.getValue(mp.get(catalog['aeropuertosData'],verticeA))
-            aeropuertoA['DISTANCIA'] = 0
+            aeropuertoA['DISTANCIA'] = dist_origen
             aeropuertoA['TIEMPO'] = 0
             aeropuertoB = me.getValue(mp.get(catalog['aeropuertosData'],verticeB))
             aeropuertoB['DISTANCIA'] = arcoDistancia['weight']
@@ -503,6 +505,8 @@ def req_7(catalog, origen, destino):
         distancia = 0
         totalAeropuertos = 0
         aeropuertosTabla=[]
+        vertOrigen = me.getValue(mp.get(catalog['aeropuertosData'], vertOrigen))
+        vertDestino = me.getValue(mp.get(catalog['aeropuertosData'], vertDestino))
         infoA={'AEROPUERTO': 'ORIGEN','ICAO': vertOrigen['ICAO'], 'NOMBRE': vertOrigen['NOMBRE'], 'CIUDAD': vertOrigen['CIUDAD'], 'PAIS': vertOrigen['PAIS'], 'DISTANCIA': dist_origen}
         aeropuertosTabla.append(infoA)
         infoB = {'AEROPUERTO':'DESTINO','ICAO': vertDestino['ICAO'], 'NOMBRE': vertDestino['NOMBRE'], 'CIUDAD': vertDestino['CIUDAD'], 'PAIS': vertDestino['PAIS'], 'DISTANCIA': dist_destino}
