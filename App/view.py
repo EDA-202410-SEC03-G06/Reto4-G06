@@ -90,14 +90,13 @@ def print_req_1(control):
     origen = (origen_lat,origen_lon)
     destino = (destino_lat, destino_lon)
     # TODO: Imprimir el resultado del requerimiento 1
-    distancia, totalAeropuertos, aeropuertosTabla, tiempo = controller.req_1(control,origen,destino)
+    distancia, totalAeropuertos, aeropuertosTabla = controller.req_1(control,origen,destino)
   
     print(f'La distancia total que tomará el camino es de: {round(distancia,2)} Km')
     print(f'El número total de aeropuertos visitados fue: {totalAeropuertos}')
   
     print(tabulate(aeropuertosTabla, headers='keys', tablefmt="simple_grid"))
   
-    print('El tiempo total de vuelo es:', tiempo)
 
 
 def print_req_2(control):
@@ -146,9 +145,8 @@ def print_req_6(control):
     # TODO: Imprimir el resultado del requerimiento 6
     M = int(input('Cantidad de aereopuertos con mayor prioridad (M)'))
     mayorC, rutas = controller.req_6(control,M)
-    print(mayorC)
-    for ele in rutas['elements']:
-        print(ele)
+    print(tabulate(mayorC, headers='keys', tablefmt="simple_grid"))
+    print(tabulate(rutas['elements'], headers='keys', tablefmt="simple_grid"))
     pass
 
 
@@ -157,11 +155,22 @@ def print_req_7(control):
         Función que imprime la solución del Requerimiento 7 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 7
-    origen = input('Ingrese el punto de origen con latitud y longitud: ')
-    destino = input('Ingrese el destino con latitud y longitud: ')
+    origen_lat = float(input('Ingrese la latitud del origen: '))
+    origen_lon = float(input('Ingrese la longitud del origen: '))
+    destino_lat = float(input('Ingrese la latitud del destino: '))
+    destino_lon = float(input('Ingrese la longitud del destino: '))
+    
+    origen = (origen_lat,origen_lon)
+    destino = (destino_lat, destino_lon)
     # TODO: Imprimir el resultado del requerimiento 1
-    ans = controller.req_1(control,origen,destino)
-    return ans
+    distancia, totalAeropuertos, aeropuertosTabla, tiempo = controller.req_7(control,origen,destino)
+    print('El tiempo total de vuelo es:', tiempo)
+    print(f'La distancia total que tomará el camino es de: {round(distancia,2)} Km')
+    print(f'El número de aeropuertos visitados fue: {totalAeropuertos}')
+  
+    print(tabulate(aeropuertosTabla, headers='keys', tablefmt="simple_grid"))
+  
+    
 
 
 def print_req_8(control):

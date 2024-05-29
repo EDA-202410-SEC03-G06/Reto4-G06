@@ -77,40 +77,13 @@ def loadVuelos(catalog):
         total_vuelos +=1
         if flight['TIPO_VUELO']=='MILITAR':
             model.add_arcoMilitar(catalog,flight)
-            origen = flight['ORIGEN']
-            destino = flight['DESTINO']
-    
-            parejaOrigen = model.mp.get(catalog['aeropuertosData'],origen)
-            infoOrigen = model.me.getValue(parejaOrigen)
-            infoOrigen['cantidad_Militar'] +=1
-    
-            parejaDestino = model.mp.get(catalog['aeropuertosData'],destino)
-            valor_destino = model.me.getValue(parejaDestino)
-            valor_destino['cantidad_Militar'] +=1
+        
         elif flight['TIPO_VUELO']=='AVIACION_CARGA':
             model.add_arcoCarga(catalog,flight)
-            origen = flight['ORIGEN']
-            destino = flight['DESTINO']
-    
-            parejaOrigen = model.mp.get(catalog['aeropuertosData'],origen)
-            infoOrigen = model.me.getValue(parejaOrigen)
-            infoOrigen['cantidad_Carga'] +=1
-    
-            parejaDestino = model.mp.get(catalog['aeropuertosData'],destino)
-            valor_destino = model.me.getValue(parejaDestino)
-            valor_destino['cantidad_Carga'] +=1
+            
         elif flight['TIPO_VUELO']=='AVIACION_COMERCIAL':
             model.add_arcoComercial(catalog,flight)
-            origen = flight['ORIGEN']
-            destino = flight['DESTINO']
-    
-            parejaOrigen = model.mp.get(catalog['aeropuertosData'],origen)
-            infoOrigen = model.me.getValue(parejaOrigen)
-            infoOrigen['cantidad_Comercial'] +=1
-    
-            parejaDestino = model.mp.get(catalog['aeropuertosData'],destino)
-            valor_destino = model.me.getValue(parejaDestino)
-            valor_destino['cantidad_Comercial'] +=1
+            
         
     aeropuertos = model.totalVertex(catalog['disCarga'])
     militar, comercial, carga = model.crear_tablas(catalog)
@@ -188,12 +161,19 @@ def req_6(control,n):
     return model.req_6(control['model'],n)
 
 
-def req_7(control):
+def req_7(control, origen, destino):
     """
     Retorna el resultado del requerimiento 7
     """
     # TODO: Modificar el requerimiento 7
-    pass
+    start_time = get_time()
+    datos = model.req_7(control['model'], model.me.getValue(model.mp.get(control['model']['coordenadas'],'KDAL')), (5.0296, -75.4647))
+    end_time = get_time()
+  
+    print(delta_time(start_time, end_time),'ms')
+  
+    return datos
+
 
 
 def req_8(control):
