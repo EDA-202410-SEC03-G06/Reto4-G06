@@ -261,12 +261,11 @@ def datosTablas(data_structs, tipo_Avion):
         merg.sort(data_structs, sort_criteria_tabla_carga)
     
     primeros = lt.subList(data_structs,1,5)
-    ultimos = lt.subList(data_structs,-4,5)
+    ultimos = lt.lastElement(data_structs)
     prim_ult = []
     for valor in lt.iterator(primeros):
         prim_ult.append(valor)
-    for valor in lt.iterator(ultimos):
-        prim_ult.append(valor)
+    prim_ult.append(ultimos)
     return prim_ult
 
 def crear_tablas(catalog):
@@ -301,13 +300,12 @@ def req_1(catalog, origen, destino):
         arcoTiempo = gr.getEdge(catalog['timeComercial'],verticeA, verticeB)
         tiempo += arcoTiempo['weight']
         aeropuertoA = me.getValue(mp.get(catalog['aeropuertosData'],verticeA))
-        
+        aeropuertoA['TIEMPO'] = 0
         aeropuertoB = me.getValue(mp.get(catalog['aeropuertosData'],verticeB))
         aeropuertoB['TIEMPO'] = arcoTiempo['weight']
         if totalAeropuertos == 1:
            lt.addLast(aeropuertos, aeropuertoB)
-        else:
-            aeropuertoA['TIEMPO'] = 0
+        totalAeropuertos+=1
         lt.addLast(aeropuertos, aeropuertoA)
     aeropuertosTabla = []
     for aeropuerto in lt.iterator(aeropuertos):

@@ -77,40 +77,13 @@ def loadVuelos(catalog):
         total_vuelos +=1
         if flight['TIPO_VUELO']=='MILITAR':
             model.add_arcoMilitar(catalog,flight)
-            origen = flight['ORIGEN']
-            destino = flight['DESTINO']
-    
-            parejaOrigen = model.mp.get(catalog['aeropuertosData'],origen)
-            infoOrigen = model.me.getValue(parejaOrigen)
-            infoOrigen['cantidad_Militar'] +=1
-    
-            parejaDestino = model.mp.get(catalog['aeropuertosData'],destino)
-            valor_destino = model.me.getValue(parejaDestino)
-            valor_destino['cantidad_Militar'] +=1
+        
         elif flight['TIPO_VUELO']=='AVIACION_CARGA':
             model.add_arcoCarga(catalog,flight)
-            origen = flight['ORIGEN']
-            destino = flight['DESTINO']
-    
-            parejaOrigen = model.mp.get(catalog['aeropuertosData'],origen)
-            infoOrigen = model.me.getValue(parejaOrigen)
-            infoOrigen['cantidad_Carga'] +=1
-    
-            parejaDestino = model.mp.get(catalog['aeropuertosData'],destino)
-            valor_destino = model.me.getValue(parejaDestino)
-            valor_destino['cantidad_Carga'] +=1
+            
         elif flight['TIPO_VUELO']=='AVIACION_COMERCIAL':
             model.add_arcoComercial(catalog,flight)
-            origen = flight['ORIGEN']
-            destino = flight['DESTINO']
-    
-            parejaOrigen = model.mp.get(catalog['aeropuertosData'],origen)
-            infoOrigen = model.me.getValue(parejaOrigen)
-            infoOrigen['cantidad_Comercial'] +=1
-    
-            parejaDestino = model.mp.get(catalog['aeropuertosData'],destino)
-            valor_destino = model.me.getValue(parejaDestino)
-            valor_destino['cantidad_Comercial'] +=1
+            
         
     aeropuertos = model.totalVertex(catalog['disCarga'])
     militar, comercial, carga = model.crear_tablas(catalog)
