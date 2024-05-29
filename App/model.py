@@ -293,12 +293,12 @@ def req_1(catalog, origen, destino):
   
     totalAeropuertos = 1
   
-    tiempo = 0
+    
     for vuelo in lt.iterator(camino):
         verticeA = vuelo['vertexA']
         verticeB = vuelo['vertexB']
         arcoTiempo = gr.getEdge(catalog['timeComercial'],verticeA, verticeB)
-        tiempo += arcoTiempo['weight']
+        
         aeropuertoA = me.getValue(mp.get(catalog['aeropuertosData'],verticeA))
         aeropuertoA['TIEMPO'] = 0
         aeropuertoB = me.getValue(mp.get(catalog['aeropuertosData'],verticeB))
@@ -311,7 +311,7 @@ def req_1(catalog, origen, destino):
     for aeropuerto in lt.iterator(aeropuertos):
        info = {'ICAO': aeropuerto['ICAO'], 'NOMBRE': aeropuerto['NOMBRE'], 'CIUDAD': aeropuerto['CIUDAD'], 'PAIS': aeropuerto['PAIS'], 'TIEMPO': aeropuerto['TIEMPO']}
        aeropuertosTabla.insert(0, info)
-    return distancia, totalAeropuertos, aeropuertosTabla, tiempo
+    return distancia, totalAeropuertos, aeropuertosTabla
 
 def req_2(data_structs):
     """
