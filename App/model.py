@@ -327,12 +327,47 @@ def req_3(data_structs):
     """
     # TODO: Realizar el requerimiento 3
     disComercial = data_structs['disComercial']
+    aeropuertos = mp.keySet(data_structs['coordenadas'])
     listaConcurrencia = mp.valueSet(data_structs['aeropuertosData'])
     merg.sort(listaConcurrencia,sort_criteria_tabla_comercial)
     mayorConcurrencia = lt.firstElement(listaConcurrencia)
-    trayecto = prim.PrimMST(disComercial,mayorConcurrencia['ICAO'])
-    print(mayorConcurrencia)
-    pass
+    arbol = prim.PrimMST(disComercial,mayorConcurrencia['ICAO'])
+    prim.edgesMST(disComercial,arbol)
+    arcos = arbol['mst']
+    grafo = gr.newGraph()
+    
+    for vuelo in lt.iterator(arcos):
+        gr.insertVertex(grafo,vuelo['vertexA'])
+        ispresent = gr.containsVertex(grafo,vuelo['vertexB'])
+        if not ispresent:
+            gr.insertVertex(grafo,vuelo['vertexB'])
+        gr.addEdge(grafo,vuelo['vertexA'],vuelo['vertexB'],vuelo['weight'])   
+    
+    Dijktra = djk.Dijkstra(grafo,mayorConcurrencia['ICAO'])
+    disMayor = 0
+    aeroMayor =''
+    for aeropuerto in lt.iterator(gr.vertices(grafo)):
+        disAeropuerto = djk.distTo(Dijktra,aeropuerto)
+        if disAeropuerto>disMayor:
+            disMayor = disAeropuerto
+            aeroMayor = aeropuerto
+            
+    ruta = djk.pathTo(Dijktra,aeroMayor)
+#usar prim.weight para suma de la distancia de los trayectos
+    disTotal = prim.weightMST(grafo,arbol)
+
+    for camino in lt.iterator(ruta):
+            verticeA = camino['vertexA']
+            verticeB = camino['vertexB']
+            viaje = verticeA+'-'+verticeB
+            aeropuertos.append(verticeA)
+            if verticeB not in aeropuertos:
+                aeropuertos.append(verticeB)
+            vuelos.append(viaje)
+
+    
+  
+    return mayorConcurrencia, disTotal, (data_size(grafo)-1), trayecto
 
 '''
 def req_4(catalog):
@@ -367,12 +402,7 @@ def req_6(data_structs, n):
     mayorConcurrencia = lt.firstElement(listaConcurrencia)
     count = 1
     rutas = lt.newList('ARRAY_LIST')
-    cuenta =0
-    for ele in lt.iterator(listaConcurrencia):
-        if cuenta>0:
-            break
-        else:
-            cuenta+=1
+    
                 
     while count<(n+1):
         count+=1
